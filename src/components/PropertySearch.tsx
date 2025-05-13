@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { SearchCriteria, PropertyType } from '@/types';
-import { search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface PropertySearchProps {
   onSearch: (criteria: SearchCriteria) => void;
