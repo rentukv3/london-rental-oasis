@@ -55,9 +55,14 @@ export const normalizeProperty = (property: Partial<Property>): Property => {
       }
       return img;
     });
+  } else if (typeof property.images === 'string') {
+    // Handle case where images might be a single string
+    normalized.images = [createPropertyImageFromUrl(property.images)];
   } else if (property.images) {
-    // Handle case where images might not be an array
-    normalized.images = [createPropertyImageFromUrl(property.images.toString())];
+    // Handle case where images might be a single object
+    if (typeof property.images === 'object') {
+      normalized.images = [property.images as PropertyImage];
+    }
   }
   
   // Copy all other properties
