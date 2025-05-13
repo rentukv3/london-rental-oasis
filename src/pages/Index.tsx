@@ -6,7 +6,7 @@ import HeroSection from '@/components/HeroSection';
 import FeaturedProperties from '@/components/FeaturedProperties';
 import Testimonials from '@/components/Testimonials';
 import FaqAccordion from '@/components/FaqAccordion';
-import { Property, SearchCriteria, Testimonial, Faq, PropertyImage } from '@/types';
+import { Property, SearchCriteria, Testimonial, Faq } from '@/types';
 import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
 
 // Sample data

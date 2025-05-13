@@ -1,188 +1,134 @@
-
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { Button } from '@/components/ui/button';
 import { Property } from '@/types';
 import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
-import { ArrowLeft, MapPin, Home, Bed, Bath, Calendar, Heart } from 'lucide-react';
 
-// Sample property data (in a real app, this would come from an API)
-const propertySample: Record<string, Property> = {
-  '1': normalizeProperty({
+// Sample data - in a real app, this would come from an API
+const properties: Property[] = [
+  normalizeProperty({
     id: '1',
     title: 'Modern Studio in Chelsea',
+    description: 'A beautiful modern studio apartment in the heart of Chelsea. This bright and airy property features high ceilings, wooden floors, and modern appliances. The apartment has been recently renovated and includes a fully equipped kitchen, a spacious bathroom with a rain shower, and ample storage space.',
     location: 'Chelsea, London SW3',
     price: 1800,
     propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop')],
-    description: 'A beautifully presented studio apartment in the heart of Chelsea. This property features a modern kitchen, stylish bathroom, and ample storage space. Perfect for young professionals.',
+    amenities: ['WiFi', 'Dishwasher', 'Washing Machine', 'Central Heating', 'TV'],
     isFeatured: true
   }),
-  '2': normalizeProperty({
+  normalizeProperty({
     id: '2',
     title: 'Luxury 2 Bed Apartment with Balcony',
+    description: 'A stunning two-bedroom apartment in the vibrant area of Shoreditch. This luxury property features a spacious open-plan living area with floor-to-ceiling windows leading to a private balcony with city views. The kitchen is fully equipped with high-end appliances, and both bedrooms come with en-suite bathrooms.',
     location: 'Shoreditch, London EC2',
     price: 2800,
     propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop')],
-    description: 'Stunning 2-bedroom apartment with a private balcony offering views across the city. The property features a spacious open-plan living area, high-end kitchen appliances, and two modern bathrooms. Located in vibrant Shoreditch with easy access to transport links.',
+    amenities: ['Balcony', 'Dishwasher', 'Washing Machine', 'Elevator', 'Gym', '24/7 Security'],
     isFeatured: true
   }),
-  '3': normalizeProperty({
+  normalizeProperty({
     id: '3',
     title: 'Cozy Room in Shared House',
+    description: 'A comfortable and well-furnished room in a friendly shared house in Brixton. The room includes a double bed, wardrobe, desk, and chair. Shared facilities include a modern kitchen, two bathrooms, a living room with a smart TV, and a small garden. All bills and WiFi are included in the rent.',
     location: 'Brixton, London SW9',
     price: 950,
     propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop')],
-    availableFrom: '2025-07-15',
-    description: 'Comfortable room in a friendly shared house in Brixton. The house has a large kitchen, shared living room, and garden. All bills included in the rent. Available from July 15th, 2025.'
+    amenities: ['Bills Included', 'WiFi', 'Shared Garden', 'Furnished', 'Washing Machine'],
+    availableFrom: '2025-07-15'
   })
-};
+];
 
-const PropertyDetails = () => {
+const PropertyDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   
-  // In a real app, we would fetch the property data from an API
-  const property = id ? propertySample[id] : null;
-  
+  // Find the property with the matching ID
+  const property = properties.find(p => p.id === id);
+
   if (!property) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="flex flex-col min-h-screen">
         <Header />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center p-8">
-            <h1 className="text-2xl font-bold mb-4">Property Not Found</h1>
-            <p className="mb-6 text-gray-600">The property you're looking for doesn't exist or has been removed.</p>
-            <Button 
-              onClick={() => navigate('/properties')}
-              className="bg-rent-blue hover:bg-rent-blue-light text-white"
-            >
-              Browse Properties
-            </Button>
+        <main className="flex-grow">
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">Property Not Found</h2>
+              <p>Sorry, the property you are looking for could not be found.</p>
+            </div>
           </div>
-        </div>
+        </main>
         <Footer />
       </div>
     );
   }
 
-  const handleBookViewing = () => {
-    console.log('Book viewing for property:', property.id);
-    // In a real app, this would open a booking form or modal
-  };
-
-  const handleSaveProperty = () => {
-    console.log('Save property:', property.id);
-    // In a real app, this would save the property to the user's favorites
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
-          {/* Back button */}
-          <Button 
-            variant="ghost" 
-            className="mb-6 text-gray-600 hover:text-rent-blue pl-0" 
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Properties
-          </Button>
-          
-          {/* Property header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Property Image */}
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">{property.title}</h1>
-              <div className="flex items-center text-gray-600">
-                <MapPin size={18} className="mr-1" />
-                <p>{property.location || `${property.city || ''}, ${property.country || ''}`}</p>
-              </div>
-            </div>
-            <div className="mt-4 md:mt-0">
-              <p className="text-3xl font-bold text-rent-blue">£{property.price} <span className="text-base font-normal text-gray-600">per month</span></p>
-            </div>
-          </div>
-          
-          {/* Property image */}
-          <div className="mb-8 rounded-lg overflow-hidden">
-            {property.images && property.images.length > 0 ? (
-              <img 
-                src={property.images[0].url} 
-                alt={property.title} 
-                className="w-full h-[400px] object-cover"
-              />
-            ) : (
-              <div className="w-full h-[400px] bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-500">No image available</span>
-              </div>
-            )}
-          </div>
-          
-          {/* Property details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="col-span-2">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Property Details</h2>
-                <p className="text-gray-700 mb-6">{property.description}</p>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                  <div className="flex items-center">
-                    <Home size={20} className="mr-2 text-rent-blue" />
-                    <span className="text-gray-700">{property.propertyType}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Bed size={20} className="mr-2 text-rent-blue" />
-                    <span className="text-gray-700">{property.bedrooms} {property.bedrooms && property.bedrooms > 1 ? 'Bedrooms' : 'Bedroom'}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Bath size={20} className="mr-2 text-rent-blue" />
-                    <span className="text-gray-700">{property.bathrooms} {property.bathrooms && property.bathrooms > 1 ? 'Bathrooms' : 'Bathroom'}</span>
-                  </div>
+              {property.images && property.images.length > 0 ? (
+                <img src={property.images[0].url} alt={property.title} className="w-full h-auto rounded-lg shadow-md" />
+              ) : (
+                <div className="bg-gray-200 aspect-w-16 aspect-h-9 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500">No Image Available</span>
                 </div>
-                
-                {property.availableFrom && (
-                  <div className="flex items-center text-gray-700 mb-6">
-                    <Calendar size={20} className="mr-2 text-rent-blue" />
-                    <span>Available from: {property.availableFrom}</span>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
             
+            {/* Property Details */}
             <div>
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-                <p className="text-gray-700 mb-6">
-                  Interested in this property? Schedule a viewing or contact the landlord for more information.
-                </p>
-                <div className="space-y-3">
-                  <Button 
-                    className="w-full bg-rent-blue hover:bg-rent-blue-light text-white"
-                    onClick={handleBookViewing}
-                  >
-                    Book a Viewing
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full border-rent-blue text-rent-blue hover:bg-rent-blue hover:text-white"
-                    onClick={handleSaveProperty}
-                  >
-                    <Heart size={18} className="mr-2" />
-                    Save Property
-                  </Button>
+              <h1 className="text-3xl font-bold mb-4">{property.title}</h1>
+              <p className="text-gray-600 mb-4">{property.location}</p>
+              
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-2xl font-semibold text-rental-price">£{property.price} <span className="text-gray-500">/ month</span></span>
+                {property.isFeatured && (
+                  <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-featured-tag text-white">
+                    Featured
+                  </span>
+                )}
+              </div>
+              
+              <p className="text-gray-700 mb-6">{property.description}</p>
+              
+              {/* Amenities */}
+              {property.amenities && property.amenities.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2">Amenities</h2>
+                  <ul className="list-disc list-inside text-gray-600">
+                    {property.amenities.map((amenity, index) => (
+                      <li key={index}>{amenity}</li>
+                    ))}
+                  </ul>
                 </div>
+              )}
+              
+              {/* Availability */}
+              {property.availableFrom && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2">Availability</h2>
+                  <p className="text-gray-600">Available from: {new Date(property.availableFrom).toLocaleDateString()}</p>
+                </div>
+              )}
+              
+              {/* Contact Form or Call to Action */}
+              <div>
+                <button className="bg-rent-blue hover:bg-rent-blue-light text-white font-bold py-2 px-4 rounded">
+                  Contact Agent
+                </button>
               </div>
             </div>
           </div>
