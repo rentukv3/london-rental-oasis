@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,21 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors for Rent4U
+				'rent-blue': {
+					DEFAULT: '#1e40af', // Deep blue
+					light: '#3b82f6', // Lighter blue for hover states
+					dark: '#1e3a8a', // Dark blue for text
+				},
+				'rent-red': {
+					DEFAULT: '#dc2626', // Vibrant red
+					light: '#ef4444', // Lighter red for hover states
+					dark: '#b91c1c', // Darker red for text
+				},
+				'rental-price': '#1a56db', // Blue for price display
+				'available-tag': '#10b981', // Green for available tag
+				'featured-tag': '#8b5cf6', // Purple for featured tag
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -89,6 +104,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'london-skyline': "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1470&auto=format&fit=crop')",
 			}
 		}
 	},
