@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -17,7 +18,13 @@ const properties: Property[] = [
     bedrooms: 1,
     bathrooms: 1,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop')],
-    amenities: ['WiFi', 'Dishwasher', 'Washing Machine', 'Central Heating', 'TV'],
+    features: {
+      wifi: true, 
+      dishwasher: true, 
+      washingMachine: true, 
+      centralHeating: true, 
+      tv: true
+    },
     isFeatured: true
   }),
   normalizeProperty({
@@ -30,7 +37,14 @@ const properties: Property[] = [
     bedrooms: 2,
     bathrooms: 2,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop')],
-    amenities: ['Balcony', 'Dishwasher', 'Washing Machine', 'Elevator', 'Gym', '24/7 Security'],
+    features: {
+      balcony: true, 
+      dishwasher: true, 
+      washingMachine: true, 
+      elevator: true, 
+      gym: true, 
+      security: true
+    },
     isFeatured: true
   }),
   normalizeProperty({
@@ -43,7 +57,13 @@ const properties: Property[] = [
     bedrooms: 1,
     bathrooms: 1,
     images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop')],
-    amenities: ['Bills Included', 'WiFi', 'Shared Garden', 'Furnished', 'Washing Machine'],
+    features: {
+      billsIncluded: true, 
+      wifi: true, 
+      garden: true, 
+      furnished: true, 
+      washingMachine: true
+    },
     availableFrom: '2025-07-15'
   })
 ];
@@ -104,14 +124,17 @@ const PropertyDetails: React.FC = () => {
               
               <p className="text-gray-700 mb-6">{property.description}</p>
               
-              {/* Amenities */}
-              {property.amenities && property.amenities.length > 0 && (
+              {/* Features */}
+              {property.features && Object.keys(property.features).length > 0 && (
                 <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Amenities</h2>
+                  <h2 className="text-xl font-semibold mb-2">Features</h2>
                   <ul className="list-disc list-inside text-gray-600">
-                    {property.amenities.map((amenity, index) => (
-                      <li key={index}>{amenity}</li>
-                    ))}
+                    {Object.entries(property.features)
+                      .filter(([_, value]) => value === true)
+                      .map(([key, _], index) => (
+                        <li key={index}>{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</li>
+                      ))
+                    }
                   </ul>
                 </div>
               )}
