@@ -55,8 +55,11 @@ export const normalizeProperty = (property: Partial<Property>): Property => {
       }
       return img;
     });
+  } else if (property.images) {
+    // Handle case where images might not be an array
+    normalized.images = [createPropertyImageFromUrl(property.images.toString())];
   }
   
   // Copy all other properties
-  return { ...normalized, ...property };
+  return { ...property, ...normalized };
 };
