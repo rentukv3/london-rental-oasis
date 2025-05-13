@@ -1,4 +1,6 @@
 
+export type PropertyType = 'Apartment' | 'House' | 'Studio' | 'Room';
+
 export interface SearchCriteria {
   location: string;
   propertyType: string;
@@ -16,13 +18,7 @@ export interface Property {
   images: string[];
   isFeatured?: boolean;
   availableFrom?: string;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  userType: 'tenant' | 'landlord';
+  description?: string;
 }
 
 export interface Testimonial {
@@ -37,5 +33,3 @@ export interface Faq {
   question: string;
   answer: string;
 }
-
-export type PropertyType = 'Apartment' | 'House' | 'Studio' | 'Room';

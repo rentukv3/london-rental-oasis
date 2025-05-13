@@ -1,15 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../ui/logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const { toast } = useToast();
+
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Subscribe form submitted');
-    // Handle newsletter subscription
+    if (email) {
+      toast({
+        title: "Subscription successful!",
+        description: "Thank you for subscribing to our newsletter.",
+      });
+      setEmail('');
+    }
   };
 
   return (
@@ -49,8 +58,8 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li><Link to="/properties" className="text-gray-300 hover:text-white">Properties</Link></li>
               <li><Link to="/how-it-works" className="text-gray-300 hover:text-white">How It Works</Link></li>
-              <li><Link to="/testimonials" className="text-gray-300 hover:text-white">Testimonials</Link></li>
               <li><Link to="/faq" className="text-gray-300 hover:text-white">FAQ</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -75,6 +84,9 @@ const Footer: React.FC = () => {
                 type="email" 
                 placeholder="Your email" 
                 className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <Button 
                 type="submit" 

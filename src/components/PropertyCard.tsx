@@ -1,98 +1,64 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Property } from '@/types';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Heart } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { MapPin, Bed, Bath } from 'lucide-react';
 
 interface PropertyCardProps {
   property: Property;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
-  const formattedPrice = new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-    maximumFractionDigits: 0,
-  }).format(property.price);
-  
-  const handleViewDetails = () => {
-    console.log(`View details for property ${property.id}`);
-    // Implement navigation to property details page
-  };
-  
-  const handleFavorite = () => {
-    console.log(`Toggle favorite for property ${property.id}`);
-    // Implement favorite toggling
-  };
-  
-  const imageUrl = property.images && property.images.length > 0
-    ? property.images[0]
-    : 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1365&auto=format&fit=crop';
-
   return (
-    <Card className="overflow-hidden group h-full flex flex-col">
-      <div className="relative">
-        {property.isFeatured && (
-          <span className="absolute top-2 left-2 z-10 bg-featured-tag text-white px-3 py-1 rounded-full text-xs font-medium">
-            Featured
-          </span>
-        )}
-        
-        <button 
-          onClick={handleFavorite} 
-          className="absolute top-2 right-2 z-10 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-        >
-          <Heart size={20} className="text-gray-600 hover:text-rent-red transition-colors" />
-        </button>
-        
-        <div className="h-48 overflow-hidden">
-          <img 
-            src={imageUrl} 
+    <Link to={`/property/${property.id}`} className="group">
+      <Card className="overflow-hidden h-full transition-transform duration-300 group-hover:shadow-lg">
+        <div className="relative h-48 overflow-hidden">
+          <img
+            src={property.images[0]}
             alt={property.title}
-            className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </div>
-      </div>
-      
-      <CardContent className="p-4 flex-grow">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold line-clamp-2">{property.title}</h3>
-          <p className="text-rental-price font-bold whitespace-nowrap">{formattedPrice}/mo</p>
-        </div>
-        
-        <p className="text-gray-600 mb-3">{property.location}</p>
-        
-        <div className="flex items-center space-x-4 text-sm text-gray-700">
-          {property.propertyType && (
-            <span>{property.propertyType}</span>
+          {property.isFeatured && (
+            <Badge className="absolute top-2 right-2 bg-rent-blue">Featured</Badge>
           )}
+        </div>
+        
+        <CardContent className="pt-4">
+          <h3 className="font-bold text-lg mb-1 group-hover:text-rent-blue transition-colors">
+            {property.title}
+          </h3>
           
-          {property.bedrooms !== undefined && (
-            <span>{property.bedrooms} Bedroom{property.bedrooms !== 1 ? 's' : ''}</span>
-          )}
+          <div className="flex items-center text-gray-500 mb-3">
+            <MapPin size={16} className="mr-1 flex-shrink-0" />
+            <span className="text-sm truncate">{property.location}</span>
+          </div>
           
-          {property.bathrooms !== undefined && (
-            <span>{property.bathrooms} Bathroom{property.bathrooms !== 1 ? 's' : ''}</span>
-          )}
-        </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center">
+                <Bed size={16} className="mr-1 text-gray-500" />
+                <span className="text-sm">{property.bedrooms}</span>
+              </div>
+              
+              <div className="flex items-center">
+                <Bath size={16} className="mr-1 text-gray-500" />
+                <span className="text-sm">{property.bathrooms}</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
         
-        {property.availableFrom ? (
-          <p className="text-sm mt-2">From {new Date(property.availableFrom).toLocaleDateString('en-GB', { month: 'long', day: 'numeric' })}</p>
-        ) : (
-          <p className="text-sm mt-2 text-available-tag font-medium">Available Now</p>
-        )}
-      </CardContent>
-      
-      <CardFooter className="border-t p-4">
-        <Button 
-          onClick={handleViewDetails} 
-          className="w-full bg-rent-blue hover:bg-rent-blue-light text-white"
-        >
-          View Details
-        </Button>
-      </CardFooter>
-    </Card>
+        <CardFooter className="flex justify-between items-center border-t border-gray-100 pt-4 bg-gray-50">
+          <span className="font-bold text-lg text-rent-blue">£{property.price}<span className="text-xs font-normal text-gray-500">/month</span></span>
+          
+          <span className="text-sm text-gray-500">
+            {property.availableFrom ? `Available from ${property.availableFrom}` : 'Available Now'}
+          </span>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 };
 
