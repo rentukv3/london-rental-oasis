@@ -1,0 +1,62 @@
+
+import { Property, PropertyTypeValue, PropertyImage } from '@/types';
+
+/**
+ * Helper function to convert string image URLs to PropertyImage objects
+ */
+export const createPropertyImageFromUrl = (url: string): PropertyImage => {
+  return {
+    url,
+    publicId: url.split('/').pop() || 'unknown'
+  };
+};
+
+/**
+ * Helper function to convert property type strings to valid PropertyTypeValue
+ */
+export const normalizePropertyType = (type: string): PropertyTypeValue => {
+  const normalizedType = type.toLowerCase();
+  
+  switch (normalizedType) {
+    case 'apartment':
+    case 'house':
+    case 'studio':
+    case 'room':
+    case 'commercial':
+    case 'land':
+      return normalizedType as PropertyTypeValue;
+    default:
+      return 'other';
+  }
+};
+
+/**
+ * Helper function to normalize a property object to ensure it matches the Property interface
+ */
+export const normalizeProperty = (property: Partial<Property>): Property => {
+  // Create a normalized property with required fields
+  const normalized: Property = {
+    id: property.id || '',
+    title: property.title || '',
+    images: [],
+    isFeatured: property.isFeatured || false
+  };
+  
+  // Add optional fields if they exist
+  if (property.propertyType) {
+    normalized.propertyType = normalizePropertyType(property.propertyType as string);
+  }
+  
+  // Convert string images to PropertyImage objects
+  if (Array.isArray(property.images)) {
+    normalized.images = property.images.map((img: any) => {
+      if (typeof img === 'string') {
+        return createPropertyImageFromUrl(img);
+      }
+      return img;
+    });
+  }
+  
+  // Copy all other properties
+  return { ...normalized, ...property };
+};

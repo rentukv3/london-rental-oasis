@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { SearchCriteria, PropertyType } from '@/types';
 import { Search } from 'lucide-react';
 
@@ -81,6 +80,7 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
             type="submit" 
             className="w-full bg-rent-blue hover:bg-rent-blue-light text-white"
           >
+            <Search className="w-4 h-4 mr-2" />
             Search Now
           </Button>
         </div>

@@ -5,74 +5,75 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import PropertySearch from '@/components/PropertySearch';
 import { Property, SearchCriteria } from '@/types';
+import { normalizeProperty } from '@/utils/dataUtils';
 import { Button } from '@/components/ui/button';
 
 // Sample data
 const allProperties: Property[] = [
-  {
+  normalizeProperty({
     id: '1',
     title: 'Modern Studio in Chelsea',
     location: 'Chelsea, London SW3',
     price: 1800,
-    propertyType: 'Studio',
+    propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop'],
     isFeatured: true
-  },
-  {
+  }),
+  normalizeProperty({
     id: '2',
     title: 'Luxury 2 Bed Apartment with Balcony',
     location: 'Shoreditch, London EC2',
     price: 2800,
-    propertyType: 'Apartment',
+    propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
     images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop'],
     isFeatured: true
-  },
-  {
+  }),
+  normalizeProperty({
     id: '3',
     title: 'Cozy Room in Shared House',
     location: 'Brixton, London SW9',
     price: 950,
-    propertyType: 'Room',
+    propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop'],
     availableFrom: '2025-07-15'
-  },
-  {
+  }),
+  normalizeProperty({
     id: '4',
     title: 'Luxury 3 Bed Townhouse',
     location: 'Kensington, London SW7',
     price: 3500,
-    propertyType: 'House',
+    propertyType: 'house',
     bedrooms: 3,
     bathrooms: 2,
     images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop'],
     isFeatured: true
-  },
-  {
+  }),
+  normalizeProperty({
     id: '5',
     title: 'Modern 1 Bed with Balcony',
     location: 'Shoreditch, London EC2',
     price: 1650,
-    propertyType: 'Apartment',
+    propertyType: 'apartment',
     bedrooms: 1,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1470&auto=format&fit=crop']
-  },
-  {
+  }),
+  normalizeProperty({
     id: '6',
     title: 'Charming Studio near Underground',
     location: 'Brixton, London SW9',
     price: 1100,
-    propertyType: 'Studio',
+    propertyType: 'studio',
     bedrooms: 0,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1502672023488-70e25813eb80?q=80&w=1471&auto=format&fit=crop']
-  }
+  })
 ];
 
 const PropertiesPage = () => {
@@ -86,10 +87,10 @@ const PropertiesPage = () => {
     // This is a simple client-side filtering; in a real app, this would be a server-side search
     const filtered = allProperties.filter(property => {
       const locationMatch = !criteria.location || 
-        property.location.toLowerCase().includes(criteria.location.toLowerCase());
+        (property.location && property.location.toLowerCase().includes(criteria.location.toLowerCase()));
       const typeMatch = !criteria.propertyType || 
-        property.propertyType.toLowerCase() === criteria.propertyType.toLowerCase();
-      const priceMatch = !criteria.priceMax || property.price <= criteria.priceMax;
+        (property.propertyType && property.propertyType.toLowerCase() === criteria.propertyType.toLowerCase());
+      const priceMatch = !criteria.priceMax || (property.price !== undefined && property.price <= criteria.priceMax);
       
       return locationMatch && typeMatch && priceMatch;
     });

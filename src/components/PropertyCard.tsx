@@ -15,11 +15,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     <Link to={`/property/${property.id}`} className="group">
       <Card className="overflow-hidden h-full transition-transform duration-300 group-hover:shadow-lg">
         <div className="relative h-48 overflow-hidden">
-          <img
-            src={property.images[0]}
-            alt={property.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          {property.images && property.images.length > 0 ? (
+            <img
+              src={property.images[0].url}
+              alt={property.title}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-500">No image</span>
+            </div>
+          )}
           {property.isFeatured && (
             <Badge className="absolute top-2 right-2 bg-rent-blue">Featured</Badge>
           )}
@@ -32,7 +38,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           
           <div className="flex items-center text-gray-500 mb-3">
             <MapPin size={16} className="mr-1 flex-shrink-0" />
-            <span className="text-sm truncate">{property.location}</span>
+            <span className="text-sm truncate">{property.location || `${property.city || ''}, ${property.country || ''}`}</span>
           </div>
           
           <div className="flex items-center justify-between">

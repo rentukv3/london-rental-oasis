@@ -89,17 +89,19 @@ export interface Property {
   /** Unique identifier */
   id: string;
   /** ID of the user who posted this property */
-  userId: string;
+  userId?: string;
   /** Property title */
   title: string;
   /** Detailed description */
   description?: string;
-  /** Street address */
+  /** Street address - deprecated, use location instead */
   address?: string;
   /** City */
   city?: string;
   /** Country */
   country?: string;
+  /** Full location string (for display purposes) */
+  location?: string;
   /** Latitude */
   latitude?: number;
   /** Longitude */
@@ -123,29 +125,31 @@ export interface Property {
   /** URL to virtual tour if available */
   virtualTourUrl?: string;
   /** Current status of the listing */
-  status: PropertyStatus;
-  /** Date when the property is available for rent */
+  status?: PropertyStatus;
+  /** Date when the property is available for rent (string or Date) */
   availabilityDate?: Date;
+  /** String format of availability date (for display) */
+  availableFrom?: string;
   /** Whether this is a featured listing */
   isFeatured: boolean;
   /** Until when the featured status lasts */
   featuredUntil?: Date;
   /** Type of advertisement (standard or featured) */
-  adType: AdType;
+  adType?: AdType;
   /** Number of views */
-  viewsCount: number;
+  viewsCount?: number;
   /** Number of contact button clicks */
-  contactClicks: number;
+  contactClicks?: number;
   /** Date when this listing was created */
-  listingCreatedAt: Date;
+  listingCreatedAt?: Date;
   /** Date when this listing expires */
   listingExpiresAt?: Date;
   /** Current promotion status */
-  promotionStatus: PromotionStatus;
+  promotionStatus?: PromotionStatus;
   /** Visibility setting */
-  visibility: PropertyVisibility;
+  visibility?: PropertyVisibility;
   /** Date when the property was first created */
-  createdAt: Date;
+  createdAt?: Date;
   /** Date when the property was last updated */
-  updatedAt: Date;
+  updatedAt?: Date;
 }

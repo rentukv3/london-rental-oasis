@@ -7,42 +7,43 @@ import FeaturedProperties from '@/components/FeaturedProperties';
 import Testimonials from '@/components/Testimonials';
 import FaqAccordion from '@/components/FaqAccordion';
 import { Property, SearchCriteria, Testimonial, Faq } from '@/types';
+import { normalizeProperty } from '@/utils/dataUtils';
 
 // Sample data
 const featuredProperties: Property[] = [
-  {
+  normalizeProperty({
     id: '1',
     title: 'Modern Studio in Chelsea',
     location: 'Chelsea, London SW3',
     price: 1800,
-    propertyType: 'Studio',
+    propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop'],
     isFeatured: true
-  },
-  {
+  }),
+  normalizeProperty({
     id: '2',
     title: 'Luxury 2 Bed Apartment with Balcony',
     location: 'Shoreditch, London EC2',
     price: 2800,
-    propertyType: 'Apartment',
+    propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
     images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop'],
     isFeatured: true
-  },
-  {
+  }),
+  normalizeProperty({
     id: '3',
     title: 'Cozy Room in Shared House',
     location: 'Brixton, London SW9',
     price: 950,
-    propertyType: 'Room',
+    propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
     images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop'],
     availableFrom: '2025-07-15'
-  }
+  })
 ];
 
 const testimonials: Testimonial[] = [
