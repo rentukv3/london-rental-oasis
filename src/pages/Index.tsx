@@ -6,8 +6,8 @@ import HeroSection from '@/components/HeroSection';
 import FeaturedProperties from '@/components/FeaturedProperties';
 import Testimonials from '@/components/Testimonials';
 import FaqAccordion from '@/components/FaqAccordion';
-import { Property, SearchCriteria, Testimonial, Faq } from '@/types';
-import { normalizeProperty } from '@/utils/dataUtils';
+import { Property, SearchCriteria, Testimonial, Faq, PropertyImage } from '@/types';
+import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
 
 // Sample data
 const featuredProperties: Property[] = [
@@ -19,7 +19,7 @@ const featuredProperties: Property[] = [
     propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop')],
     isFeatured: true
   }),
   normalizeProperty({
@@ -30,7 +30,7 @@ const featuredProperties: Property[] = [
     propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
-    images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop')],
     isFeatured: true
   }),
   normalizeProperty({
@@ -41,7 +41,7 @@ const featuredProperties: Property[] = [
     propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop')],
     availableFrom: '2025-07-15'
   })
 ];

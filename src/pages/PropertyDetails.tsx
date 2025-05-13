@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Property } from '@/types';
-import { normalizeProperty } from '@/utils/dataUtils';
+import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
 import { ArrowLeft, MapPin, Home, Bed, Bath, Calendar, Heart } from 'lucide-react';
 
 // Sample property data (in a real app, this would come from an API)
@@ -18,7 +18,7 @@ const propertySample: Record<string, Property> = {
     propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop')],
     description: 'A beautifully presented studio apartment in the heart of Chelsea. This property features a modern kitchen, stylish bathroom, and ample storage space. Perfect for young professionals.',
     isFeatured: true
   }),
@@ -30,7 +30,7 @@ const propertySample: Record<string, Property> = {
     propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
-    images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop')],
     description: 'Stunning 2-bedroom apartment with a private balcony offering views across the city. The property features a spacious open-plan living area, high-end kitchen appliances, and two modern bathrooms. Located in vibrant Shoreditch with easy access to transport links.',
     isFeatured: true
   }),
@@ -42,7 +42,7 @@ const propertySample: Record<string, Property> = {
     propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop')],
     availableFrom: '2025-07-15',
     description: 'Comfortable room in a friendly shared house in Brixton. The house has a large kitchen, shared living room, and garden. All bills included in the rent. Available from July 15th, 2025.'
   })

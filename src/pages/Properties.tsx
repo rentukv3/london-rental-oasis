@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import PropertySearch from '@/components/PropertySearch';
 import { Property, SearchCriteria } from '@/types';
-import { normalizeProperty } from '@/utils/dataUtils';
+import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
 import { Button } from '@/components/ui/button';
 
 // Sample data
@@ -18,7 +18,7 @@ const allProperties: Property[] = [
     propertyType: 'studio',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1470&auto=format&fit=crop')],
     isFeatured: true
   }),
   normalizeProperty({
@@ -29,7 +29,7 @@ const allProperties: Property[] = [
     propertyType: 'apartment',
     bedrooms: 2,
     bathrooms: 2,
-    images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1380&auto=format&fit=crop')],
     isFeatured: true
   }),
   normalizeProperty({
@@ -40,7 +40,7 @@ const allProperties: Property[] = [
     propertyType: 'room',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1470&auto=format&fit=crop')],
     availableFrom: '2025-07-15'
   }),
   normalizeProperty({
@@ -51,7 +51,7 @@ const allProperties: Property[] = [
     propertyType: 'house',
     bedrooms: 3,
     bathrooms: 2,
-    images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop'],
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop')],
     isFeatured: true
   }),
   normalizeProperty({
@@ -62,7 +62,7 @@ const allProperties: Property[] = [
     propertyType: 'apartment',
     bedrooms: 1,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1470&auto=format&fit=crop']
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1470&auto=format&fit=crop')]
   }),
   normalizeProperty({
     id: '6',
@@ -72,7 +72,7 @@ const allProperties: Property[] = [
     propertyType: 'studio',
     bedrooms: 0,
     bathrooms: 1,
-    images: ['https://images.unsplash.com/photo-1502672023488-70e25813eb80?q=80&w=1471&auto=format&fit=crop']
+    images: [createPropertyImageFromUrl('https://images.unsplash.com/photo-1502672023488-70e25813eb80?q=80&w=1471&auto=format&fit=crop')]
   })
 ];
 
