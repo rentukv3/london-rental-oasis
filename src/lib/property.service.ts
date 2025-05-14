@@ -1,12 +1,13 @@
+
 import { supabase } from '@/integrations/supabase/client';
-import { Property, PropertyImage } from '@/types/property.types';
+import { Property } from '@/types/property.types';
 
 // Helper function to safely convert database property images to our PropertyImage type
-function safelyConvertToPropertyImages(images: any): PropertyImage[] {
+function safelyConvertToPropertyImages(images: any) {
   if (!images) return [];
   if (!Array.isArray(images)) return [];
   
-  return images.map((img: any) => ({
+  return images.map((img) => ({
     id: img.id || '',
     url: img.url || '',
     alt: img.alt || '',
@@ -54,7 +55,6 @@ export async function getProperties(): Promise<Property[]> {
   }
 }
 
-// Add this function to be compatible with PropertyList.tsx
 export async function getPublishedProperties(): Promise<Property[]> {
   try {
     const { data, error } = await supabase

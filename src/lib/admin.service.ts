@@ -4,23 +4,20 @@ import { AdminDashboardData, AdminStatistics, ActivityLogItem, PendingApproval }
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   try {
-    // Get admin statistics
-    const { data: statsData, error: statsError } = await supabase
-      .from('admin_stats')
-      .select('*')
-      .single();
+    // Get admin statistics using the get_admin_stats function
+    const { data: statsData, error: statsError } = await supabase.rpc('get_admin_stats');
 
     if (statsError) throw statsError;
 
     const stats: AdminStatistics = {
-      totalUsers: statsData?.total_users || 0,
-      activeUsers: statsData?.active_users || 0,
-      totalProperties: statsData?.total_properties || 0,
-      publishedProperties: statsData?.published_properties || 0,
-      totalSubscriptions: statsData?.total_subscriptions || 0,
-      activeSubscriptions: statsData?.active_subscriptions || 0,
-      totalRevenue: statsData?.total_revenue || 0,
-      monthlyRevenue: statsData?.monthly_revenue || 0,
+      totalUsers: statsData?.totalUsers || 0,
+      activeUsers: statsData?.activeUsers || 0,
+      totalProperties: statsData?.totalProperties || 0,
+      publishedProperties: statsData?.publishedProperties || 0,
+      totalSubscriptions: statsData?.totalSubscriptions || 0,
+      activeSubscriptions: statsData?.activeSubscriptions || 0,
+      totalRevenue: statsData?.totalRevenue || 0,
+      monthlyRevenue: statsData?.monthlyRevenue || 0,
     };
 
     // Get pending approvals
@@ -34,7 +31,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 
     // Get recent activity
     const { data: activityData, error: activityError } = await supabase
-      .from('activity_logs')
+      .from('activities')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(10);
@@ -55,8 +52,8 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     const recentActivity: ActivityLogItem[] = activityData.map((item: any) => ({
       id: item.id,
       userId: item.user_id,
-      action: item.type || item.action,
-      details: item.description || item.details,
+      action: item.action,
+      details: item.details,
       createdAt: new Date(item.created_at),
       userName: item.user_name
     }));
@@ -77,17 +74,15 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 // Add these functions to be compatible with Admin.tsx
 export async function getAdminStats() {
   try {
-    const { data, error } = await supabase
-      .from('admin_stats')
-      .select('*')
-      .single();
+    // Use the RPC function instead of direct table access
+    const { data, error } = await supabase.rpc('get_admin_stats');
     
     if (error) throw error;
     
     return {
-      totalUsers: data?.total_users || 0,
-      totalProperties: data?.total_properties || 0,
-      totalBookings: data?.total_bookings || 0
+      totalUsers: data?.totalUsers || 0,
+      totalProperties: data?.totalProperties || 0,
+      totalBookings: data?.totalBookings || 0
     };
   } catch (error) {
     console.error('Error fetching admin stats:', error);
@@ -118,7 +113,7 @@ export async function getPendingApprovals() {
 export async function getRecentActivities() {
   try {
     const { data, error } = await supabase
-      .from('activity_logs')
+      .from('activities')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(10);
