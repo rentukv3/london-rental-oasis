@@ -1,43 +1,56 @@
 
 /**
- * Performance monitoring service
- * Used to track application performance metrics
+ * Service for monitoring and reporting application performance metrics
  */
 
 /**
  * Initialize performance monitoring
  */
-export function initPerformanceMonitoring() {
+export const initPerformanceMonitoring = () => {
   if (typeof window !== 'undefined' && 'performance' in window) {
-    console.log('Performance monitoring initialized');
+    // Capture navigation timing
+    const navigationTiming = performance.getEntriesByType('navigation')[0];
+    console.log('Navigation timing:', navigationTiming);
   }
-}
+};
 
 /**
- * Track a performance metric
+ * Log a performance mark
  */
-export function trackPerformance(metricName: string, value: number) {
+export const markPerformance = (name: string) => {
   if (typeof window !== 'undefined' && 'performance' in window) {
-    try {
-      performance.mark(`${metricName}-start`);
-      // Simulating some operation
-      setTimeout(() => {
-        performance.mark(`${metricName}-end`);
-        performance.measure(metricName, `${metricName}-start`, `${metricName}-end`);
-        console.log(`Performance metric: ${metricName} = ${value}ms`);
-      }, value);
-    } catch (error) {
-      console.error('Error tracking performance:', error);
+    performance.mark(name);
+  }
+};
+
+/**
+ * Measure time between two performance marks
+ */
+export const measurePerformance = (name: string, startMark: string, endMark: string) => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    performance.measure(name, startMark, endMark);
+    const measures = performance.getEntriesByName(name, 'measure');
+    if (measures.length > 0) {
+      console.log(`${name}: ${measures[0].duration.toFixed(2)}ms`);
+      return measures[0].duration;
     }
   }
-}
+  return null;
+};
 
 /**
- * Get performance metrics
+ * Monitor performance for specific component
  */
-export function getPerformanceMetrics() {
-  if (typeof window !== 'undefined' && 'performance' in window) {
-    return performance.getEntriesByType('measure');
+export const performanceMonitor = {
+  start: (componentName: string) => {
+    markPerformance(`${componentName}_start`);
+  },
+  end: (componentName: string) => {
+    markPerformance(`${componentName}_end`);
+    return measurePerformance(
+      `${componentName}_render_time`, 
+      `${componentName}_start`, 
+      `${componentName}_end`
+    );
   }
-  return [];
-}
+};

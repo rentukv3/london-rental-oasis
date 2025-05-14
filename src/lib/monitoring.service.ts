@@ -1,78 +1,57 @@
+
 import { performanceMonitor } from './performance.service';
 
-interface MonitoringConfig {
-  enabled: boolean;
-  sampleRate: number;
-  endpoint: string;
-}
+/**
+ * Initialize application monitoring
+ */
+export const initMonitoring = () => {
+  // Initialize error tracking
+  window.addEventListener('error', (event) => {
+    console.error('Uncaught error:', event);
+    // Here you would typically send to your error tracking service
+  });
 
-class MonitoringService {
-  private config: MonitoringConfig = {
-    enabled: process.env.NODE_ENV === 'production',
-    sampleRate: 1.0,
-    endpoint: process.env.VITE_MONITORING_ENDPOINT || '',
+  // Initialize unhandled promise rejection tracking
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event);
+    // Here you would typically send to your error tracking service
+  });
+};
+
+/**
+ * Log an event to the monitoring system
+ */
+export const logEvent = (eventName: string, eventData: Record<string, any>) => {
+  console.log(`[EVENT] ${eventName}:`, eventData);
+  // Here you would typically send to your analytics service
+};
+
+/**
+ * Track component performance
+ */
+export const trackComponentPerformance = (componentName: string) => {
+  performanceMonitor.start(componentName);
+  return () => {
+    performanceMonitor.end(componentName);
   };
+};
 
-  private metrics: any[] = [];
-
-  trackPageView(page: string) {
-    if (!this.config.enabled) return;
-
-    this.metrics.push({
-      type: 'pageview',
-      page,
-      timestamp: Date.now(),
-    });
+/**
+ * Monitor network requests
+ */
+export const monitorNetworkRequest = async <T>(
+  requestName: string, 
+  requestFn: () => Promise<T>
+): Promise<T> => {
+  const startTime = performance.now();
+  try {
+    const result = await requestFn();
+    const duration = performance.now() - startTime;
+    console.log(`[Network] ${requestName} completed in ${duration.toFixed(2)}ms`);
+    return result;
+  } catch (error) {
+    const duration = performance.now() - startTime;
+    console.error(`[Network] ${requestName} failed after ${duration.toFixed(2)}ms:`, error);
+    throw error;
   }
-
-  trackError(error: Error) {
-    if (!this.config.enabled) return;
-
-    this.metrics.push({
-      type: 'error',
-      error: {
-        message: error.message,
-        stack: error.stack,
-      },
-      timestamp: Date.now(),
-    });
-  }
-
-  trackApiCall(endpoint: string, duration: number, status: number) {
-    if (!this.config.enabled) return;
-
-    this.metrics.push({
-      type: 'api',
-      endpoint,
-      duration,
-      status,
-      timestamp: Date.now(),
-    });
-  }
-
-  async sendMetrics() {
-    if (!this.config.enabled || this.metrics.length === 0) return;
-
-    try {
-      const metrics = [...this.metrics];
-      this.metrics = [];
-
-      await fetch(this.config.endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(metrics),
-      });
-    } catch (error) {
-      console.error('Error sending metrics:', error);
-    }
-  }
-}
-
-export const monitoringService = new MonitoringService();
-
-// Enviar métricas cada 5 minutos
-setInterval(() => {
-  monitoringService.sendMetrics();
-}, 5 * 60 * 1000); 
+};
