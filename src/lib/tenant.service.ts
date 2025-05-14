@@ -8,19 +8,22 @@ interface TenantInsert extends Omit<Tenant, 'id' | 'created_at' | 'updated_at'> 
 
 export async function getTenants(): Promise<Tenant[]> {
   try {
-    // Use rpc function to get tenants
-    const { data, error } = await supabase.rpc('get_tenants');
+    // Use fetch to call the edge function directly
+    const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/get-tenants`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
     
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      return [];
+    if (!response.ok) {
+      throw new Error(`Error fetching tenants: ${response.statusText}`);
     }
     
-    return data as unknown as Tenant[];
+    const data = await response.json();
+    
+    return data as Tenant[];
   } catch (error: any) {
     toast({
       title: "Error",
@@ -33,24 +36,28 @@ export async function getTenants(): Promise<Tenant[]> {
 
 export async function createTenant(tenant: TenantInsert): Promise<Tenant | null> {
   try {
-    // Use rpc function to create tenant
-    const { data, error } = await supabase.rpc('create_tenant', { tenant });
+    // Use fetch to call the edge function directly
+    const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/create-tenant`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ tenant })
+    });
     
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      return null;
+    if (!response.ok) {
+      throw new Error(`Error creating tenant: ${response.statusText}`);
     }
+    
+    const data = await response.json();
     
     toast({
       title: "Success",
       description: "Tenant created successfully",
     });
     
-    return data as unknown as Tenant;
+    return data as Tenant;
   } catch (error: any) {
     toast({
       title: "Error",
@@ -63,27 +70,28 @@ export async function createTenant(tenant: TenantInsert): Promise<Tenant | null>
 
 export async function updateTenant(id: string, tenant: Partial<Tenant>): Promise<Tenant | null> {
   try {
-    // Use rpc function to update tenant
-    const { data, error } = await supabase.rpc('update_tenant', {
-      tenant_id: id,
-      tenant
+    // Use fetch to call the edge function directly
+    const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/update-tenant`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ tenant_id: id, tenant })
     });
     
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      return null;
+    if (!response.ok) {
+      throw new Error(`Error updating tenant: ${response.statusText}`);
     }
+    
+    const data = await response.json();
     
     toast({
       title: "Success",
       description: "Tenant updated successfully",
     });
     
-    return data as unknown as Tenant;
+    return data as Tenant;
   } catch (error: any) {
     toast({
       title: "Error",
@@ -96,16 +104,18 @@ export async function updateTenant(id: string, tenant: Partial<Tenant>): Promise
 
 export async function deleteTenant(id: string): Promise<boolean> {
   try {
-    // Use rpc function to delete tenant
-    const { error } = await supabase.rpc('delete_tenant', { tenant_id: id });
+    // Use fetch to call the edge function directly
+    const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/delete-tenant`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ tenant_id: id })
+    });
     
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      return false;
+    if (!response.ok) {
+      throw new Error(`Error deleting tenant: ${response.statusText}`);
     }
     
     toast({

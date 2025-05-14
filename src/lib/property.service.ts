@@ -40,17 +40,43 @@ export async function getPublishedProperties(
     
     // Convert database objects to Property type objects
     const properties = data.map(item => {
-      // First create the full location string from parts if needed
-      const locationStr = `${item.address || ''}, ${item.city || ''}, ${item.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
+      // First create the full location string from parts
+      let locationStr = '';
+      if (item.address) locationStr += item.address;
+      if (item.city) locationStr += (locationStr ? ', ' : '') + item.city;
+      if (item.country) locationStr += (locationStr ? ', ' : '') + item.country;
       
-      const features = typeof item.features === 'string' 
-        ? JSON.parse(item.features) as PropertyFeatures
-        : (item.features as unknown as PropertyFeatures) || {};
-        
-      const images = Array.isArray(item.images) 
-        ? item.images as unknown as PropertyImage[]
-        : (item.images ? [item.images as unknown as PropertyImage] : []);
+      // Parse features as PropertyFeatures
+      let features: PropertyFeatures = {};
+      if (item.features) {
+        if (typeof item.features === 'string') {
+          try {
+            features = JSON.parse(item.features) as PropertyFeatures;
+          } catch (e) {
+            console.error('Error parsing features', e);
+          }
+        } else {
+          features = item.features as unknown as PropertyFeatures;
+        }
+      }
       
+      // Handle images parsing
+      let images: PropertyImage[] = [];
+      if (item.images) {
+        if (Array.isArray(item.images)) {
+          images = item.images as unknown as PropertyImage[];
+        } else if (typeof item.images === 'string') {
+          try {
+            images = JSON.parse(item.images) as PropertyImage[];
+          } catch (e) {
+            console.error('Error parsing images', e);
+          }
+        } else if (typeof item.images === 'object') {
+          images = [item.images as unknown as PropertyImage];
+        }
+      }
+      
+      // Create the property object with proper type assertions
       const property: Property = {
         id: item.id,
         title: item.title,

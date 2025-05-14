@@ -1,12 +1,12 @@
 
 // Export property types
 export * from './property.types';
-// Export search types, but avoid ambiguity with SearchCriteria
-export type { PropertySearch } from './search.types';
-// Export testimonial types, but avoid ambiguity with Testimonial
-export type { TestimonialData } from './testimonial.types';
-// Export FAQ types, but avoid ambiguity with Faq
-export type { FaqCategory } from './faq.types';
+// Export search types
+export type { SearchCriteria } from './search.types';
+// Export testimonial types
+export type { Testimonial } from './testimonial.types';
+// Export FAQ types
+export type { Faq } from './faq.types';
 // Export other types
 export * from './subscription.types';
 export * from './notification.types';

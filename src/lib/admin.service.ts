@@ -17,8 +17,16 @@ export async function getAdminStats(): Promise<AdminStats> {
       return { totalUsers: 0, totalProperties: 0, totalBookings: 0 };
     }
     
-    // Type assertion to ensure correct shape
-    return data as AdminStats;
+    // Proper type assertion with safety check
+    if (data && typeof data === 'object') {
+      return {
+        totalUsers: data.totalUsers || 0,
+        totalProperties: data.totalProperties || 0, 
+        totalBookings: data.totalBookings || 0
+      };
+    }
+    
+    return { totalUsers: 0, totalProperties: 0, totalBookings: 0 };
   } catch (error: any) {
     toast({
       title: "Error",
@@ -50,7 +58,7 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       id: item.id,
       user_id: item.user_id,
       type: item.type,
-      details: item.details || '', // Add default value
+      details: item.details || '', // Use item.details if it exists or default to empty string
       status: item.status,
       created_at: item.created_at
     })) as PendingApproval[];
