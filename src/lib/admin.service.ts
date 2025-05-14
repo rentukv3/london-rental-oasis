@@ -20,9 +20,9 @@ export async function getAdminStats(): Promise<AdminStats> {
     // Proper type assertion with safety check
     if (data && typeof data === 'object') {
       return {
-        totalUsers: data.totalUsers || 0,
-        totalProperties: data.totalProperties || 0, 
-        totalBookings: data.totalBookings || 0
+        totalUsers: (data as any).totalUsers || 0,
+        totalProperties: (data as any).totalProperties || 0, 
+        totalBookings: (data as any).totalBookings || 0
       };
     }
     
@@ -58,7 +58,7 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       id: item.id,
       user_id: item.user_id,
       type: item.type,
-      details: item.details || '', // Use item.details if it exists or default to empty string
+      details: item.details || '', // Ensure details exists with a default value
       status: item.status,
       created_at: item.created_at
     })) as PendingApproval[];
@@ -92,8 +92,8 @@ export async function getRecentActivities(): Promise<Activity[]> {
     return data.map(item => ({
       id: item.id,
       user_id: item.user_id,
-      type: item.action, // Map action to type
-      description: item.details, // Map details to description
+      type: item.action || '', // Map action to type with fallback
+      description: item.details || '', // Map details to description with fallback
       created_at: item.created_at
     })) as Activity[];
   } catch (error: any) {

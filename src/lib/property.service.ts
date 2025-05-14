@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { PropertyFeatures } from "@/types/property.features";
