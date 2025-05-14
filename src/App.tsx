@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,9 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Bookings from "./pages/Bookings";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Admin from "./pages/Admin";
 import { AnalyticsMiddleware } from '@/middleware/analytics.middleware';
 
 const queryClient = new QueryClient();
@@ -32,6 +34,9 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/properties" element={<Properties />} />
               <Route path="/property/:id" element={<PropertyDetails />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/register" element={<Register />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/bookings" element={<Bookings />} />
               <Route path="/how-it-works" element={<HowItWorks />} />

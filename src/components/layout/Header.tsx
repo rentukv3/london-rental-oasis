@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../ui/logo';
 import { Button } from '@/components/ui/button';
 import { LogIn, Menu, X } from 'lucide-react';
 const Header: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isActive = (path: string) => {
     return location.pathname === path;
   };
   const handleLogin = () => {
-    // Handle login logic here
-    console.log('Login button clicked');
+    navigate('/auth/login');
   };
   const handlePublish = () => {
     // Handle publish property logic here
