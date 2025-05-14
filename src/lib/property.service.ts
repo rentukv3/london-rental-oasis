@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { Property, PropertyImage } from '@/types/property.types';
 
@@ -30,7 +31,7 @@ function convertToProperty(data: any): Property {
     bedrooms: data.bedrooms || 0,
     bathrooms: data.bathrooms || 0,
     areaSqm: data.area_sqm || 0,
-    type: data.property_type || 'apartment',
+    propertyType: data.property_type || 'apartment',
     status: data.status || 'draft',
     userId: data.user_id || '',
     createdAt: data.created_at ? new Date(data.created_at) : new Date(),
