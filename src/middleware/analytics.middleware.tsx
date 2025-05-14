@@ -1,9 +1,9 @@
 
-import { useEffect } from 'react';
+import { useEffect, PropsWithChildren } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnalytics } from '@/lib/analytics.service';
 
-export const AnalyticsMiddleware = ({ children }: { children: React.ReactNode }) => {
+export const AnalyticsMiddleware: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const analytics = useAnalytics();
 
