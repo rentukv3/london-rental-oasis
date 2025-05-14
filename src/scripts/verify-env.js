@@ -15,18 +15,26 @@ const requiredEnvVars = [
 // Check if .env file exists
 const envPath = path.resolve(process.cwd(), '.env');
 const prodEnvPath = path.resolve(process.cwd(), '.env.production');
+const examplePath = path.resolve(process.cwd(), '.env.example');
 
-// Try to load from .env or .env.production
+// Try to load from .env or .env.production or .env.example
 let envVars = {};
 
 if (fs.existsSync(envPath)) {
+  console.log('Using .env file for environment variables.');
   const envContent = dotenv.parse(fs.readFileSync(envPath));
   envVars = { ...envVars, ...envContent };
-}
-
-if (fs.existsSync(prodEnvPath)) {
+} else if (fs.existsSync(prodEnvPath)) {
+  console.log('Using .env.production file for environment variables.');
   const prodEnvContent = dotenv.parse(fs.readFileSync(prodEnvPath));
   envVars = { ...envVars, ...prodEnvContent };
+} else if (fs.existsSync(examplePath)) {
+  console.log('Using .env.example file for environment variables.');
+  const exampleContent = dotenv.parse(fs.readFileSync(examplePath));
+  envVars = { ...envVars, ...exampleContent };
+} else {
+  console.error('No environment file found. Please create a .env file.');
+  process.exit(1);
 }
 
 // Check if all required variables are defined

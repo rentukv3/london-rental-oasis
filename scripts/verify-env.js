@@ -1,9 +1,10 @@
-import { config } from 'dotenv';
-import { resolve } from 'path';
+
+const dotenv = require('dotenv');
+const path = require('path');
 
 function verifyEnv() {
-  // Cargar variables de entorno
-  config({ path: resolve(__dirname, '../.env') });
+  // Load environment variables
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
   const requiredEnvVars = [
     'VITE_SUPABASE_URL',
@@ -24,4 +25,4 @@ function verifyEnv() {
   console.log('All required environment variables are set!');
 }
 
-verifyEnv(); 
+verifyEnv();

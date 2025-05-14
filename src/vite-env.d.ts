@@ -23,14 +23,21 @@ interface ImportMeta {
 // Add a global type for Json
 declare type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
-// Ignore type checking for Deno-specific edge function imports
+// Define module declarations for Deno-specific edge function imports
 // These are only used in the Supabase edge functions
 declare module "https://deno.land/std@0.177.0/http/server.ts" {
-  export function serve(handler: any): void;
+  export interface ServeHandlerInfo {
+    remoteAddr: {
+      hostname: string;
+      port: number;
+      transport: string;
+    };
+  }
+  export function serve(handler: (req: Request, info: ServeHandlerInfo) => Promise<Response> | Response): void;
 }
 
 declare module "https://deno.land/std@0.168.0/http/server.ts" {
-  export function serve(handler: any): void;
+  export function serve(handler: (req: Request) => Promise<Response> | Response): void;
 }
 
 declare module "https://esm.sh/@supabase/supabase-js@2.39.0" {

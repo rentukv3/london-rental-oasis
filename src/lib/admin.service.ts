@@ -58,7 +58,7 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       id: item.id,
       user_id: item.user_id,
       type: item.type,
-      details: item.details ?? '', // Use nullish coalescing to handle missing details property
+      // Remove access to non-existent 'details' property
       status: item.status,
       created_at: item.created_at
     })) as PendingApproval[];

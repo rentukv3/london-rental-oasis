@@ -9,7 +9,7 @@ export interface PendingApproval {
   id: string;
   user_id: string;
   type: string;
-  details?: string;  // Added missing property
+  // Removed the details property since it doesn't exist in the database
   status: string;
   created_at: string;
 }

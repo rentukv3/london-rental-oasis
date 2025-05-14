@@ -1,5 +1,4 @@
-
-import { Property, PropertyTypeValue, PropertyImage, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from '@/types';
+import { Property, PropertyTypeValue, PropertyImage, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from '@/types/property.types';
 import { PropertyFeatures } from '@/types/property.features';
 import { SubscriptionPlan, SubscriptionInterval, SubscriptionFeatures, Subscription, SubscriptionStatus } from '@/types/subscription.types';
 import { Json } from '@/integrations/supabase/types';
@@ -51,9 +50,9 @@ export const normalizePropertyImages = (images: Json | null): PropertyImage[] =>
     } else if (Array.isArray(images)) {
       return images.map(img => typeof img === 'string' 
         ? createPropertyImageFromUrl(img) 
-        : img as PropertyImage);
+        : img as unknown as PropertyImage); // Use unknown as intermediate type
     } else if (typeof images === 'object') {
-      return [images as PropertyImage];
+      return [images as unknown as PropertyImage]; // Use unknown as intermediate type
     }
   } catch (e) {
     console.error('Error normalizing property images:', e);
