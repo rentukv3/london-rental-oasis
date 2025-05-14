@@ -1,8 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Property, PropertyImage } from "@/types";
+import { Property, PropertyImage, PropertyFeatures } from "@/types";
 import { toast } from "@/components/ui/use-toast";
-import { normalizeProperty, propertyToDbFormat } from "@/utils/dataUtils";
+import { normalizeProperty, propertyToDbFormat, normalizePropertyFeatures } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
 
 /**
@@ -34,8 +34,48 @@ export async function getPublishedProperties(
     
     if (error) throw error;
     
+    // Convert database objects to Property type objects
+    const properties = data?.map(item => {
+      const property: Partial<Property> = {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        address: item.address,
+        city: item.city,
+        country: item.country,
+        location: item.location,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        price: item.price,
+        currency: item.currency,
+        propertyType: item.property_type,
+        bedrooms: item.bedrooms,
+        bathrooms: item.bathrooms,
+        areaSqm: item.area_sqm,
+        features: normalizePropertyFeatures(item.features),
+        images: item.images ? (Array.isArray(item.images) ? item.images : [item.images]) : [],
+        virtualTourUrl: item.virtual_tour_url,
+        status: item.status,
+        availabilityDate: item.availability_date ? new Date(item.availability_date) : undefined,
+        isFeatured: item.is_featured,
+        featuredUntil: item.featured_until ? new Date(item.featured_until) : undefined,
+        adType: item.ad_type,
+        viewsCount: item.views_count,
+        contactClicks: item.contact_clicks,
+        listingCreatedAt: item.listing_created_at ? new Date(item.listing_created_at) : undefined,
+        listingExpiresAt: item.listing_expires_at ? new Date(item.listing_expires_at) : undefined,
+        promotionStatus: item.promotion_status,
+        visibility: item.visibility,
+        createdAt: item.created_at ? new Date(item.created_at) : undefined,
+        updatedAt: item.updated_at ? new Date(item.updated_at) : undefined,
+        userId: item.user_id
+      };
+      
+      return normalizeProperty(property);
+    }) || [];
+    
     return { 
-      properties: data?.map(normalizeProperty) || [], 
+      properties, 
       count: count || 0 
     };
   } catch (error) {
@@ -130,18 +170,38 @@ export async function createProperty(
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + plan.listingDuration);
     
-    const propertyData = {
-      ...propertyToDbFormat(property),
+    // Convert property to database format with proper typing
+    const dbProperty: any = {
       user_id: userId,
+      title: property.title,
+      description: property.description,
+      address: property.address,
+      city: property.city,
+      country: property.country,
+      latitude: property.latitude,
+      longitude: property.longitude,
+      price: property.price,
+      currency: property.currency,
+      property_type: property.propertyType,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      area_sqm: property.areaSqm,
+      features: property.features ? JSON.stringify(property.features) : null,
+      images: property.images,
+      virtual_tour_url: property.virtualTourUrl,
       status: 'draft',
+      availability_date: property.availabilityDate?.toISOString(),
+      is_featured: property.isFeatured || false,
+      ad_type: property.adType || 'standard',
       listing_expires_at: expirationDate.toISOString(),
+      visibility: property.visibility || 'public',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
     
     const { data, error } = await supabase
       .from('properties')
-      .insert(propertyData)
+      .insert(dbProperty)
       .select()
       .single();
     
@@ -152,7 +212,10 @@ export async function createProperty(
       description: 'Your property listing has been created successfully.',
     });
     
-    return normalizeProperty(data);
+    return normalizeProperty({
+      ...data,
+      features: normalizePropertyFeatures(data.features)
+    });
   } catch (error) {
     console.error('Error creating property:', error);
     toast({

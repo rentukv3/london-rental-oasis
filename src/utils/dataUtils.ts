@@ -1,4 +1,5 @@
 import { Property, PropertyTypeValue, PropertyImage } from '@/types';
+import { SubscriptionPlan, SubscriptionInterval, SubscriptionFeatures, Subscription, SubscriptionStatus } from '@/types/subscription.types';
 
 /**
  * Helper function to convert string image URLs to PropertyImage objects
@@ -52,7 +53,7 @@ export const normalizeProperty = (property: Partial<Property>): Property => {
       if (typeof img === 'string') {
         return createPropertyImageFromUrl(img);
       }
-      return img;
+      return img as PropertyImage;
     });
   } else if (typeof property.images === 'string') {
     // Handle case where images might be a single string
@@ -174,4 +175,19 @@ export function propertyToDbFormat(property: Partial<Property>): any {
   delete dbProperty.updatedAt;
   
   return dbProperty;
+}
+
+/**
+ * Convert database JSON to PropertyFeatures
+ */
+export function normalizePropertyFeatures(features: any): PropertyFeatures {
+  if (!features) return {};
+  if (typeof features === 'string') {
+    try {
+      return JSON.parse(features);
+    } catch (e) {
+      return {};
+    }
+  }
+  return features as PropertyFeatures;
 }

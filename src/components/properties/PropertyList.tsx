@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Property } from '@/types';
-import { PropertyCard } from './PropertyCard';
+import PropertyCard from '@/components/PropertyCard';
 import { useQuery } from '@tanstack/react-query';
 import { getPublishedProperties } from '@/lib/property.service';
 
@@ -20,4 +21,4 @@ export const PropertyList = () => {
       ))}
     </div>
   );
-}; 
+};
