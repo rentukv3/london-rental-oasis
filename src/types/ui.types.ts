@@ -62,3 +62,17 @@ export const mapPropertyTypeToValue = (displayType: PropertyType): string => {
   
   return mapping[displayType] || displayType.toLowerCase();
 };
+
+/**
+ * View mode for property listings
+ */
+export type PropertyViewMode = 'grid' | 'list' | 'map';
+
+/**
+ * Sort options for property listings
+ */
+export type PropertySortOption = 
+  | 'newest'      // Most recently added
+  | 'price_asc'   // Price low to high
+  | 'price_desc'  // Price high to low
+  | 'popular';    // Most viewed

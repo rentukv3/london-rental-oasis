@@ -8,4 +8,4 @@ export * from './payment.types';
 export * from './user.types';
 export * from './push.types';
 export * from './api.types';
-export * from './ui.types'; // Adding new types for UI components
+export * from './ui.types';

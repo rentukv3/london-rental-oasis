@@ -48,7 +48,7 @@ export interface SubscriptionFeatures {
 export interface SubscriptionPlan {
   /** Unique identifier */
   id: string;
-  /** Plan name (e.g., "Basic", "Premium", "Pro") */
+  /** Plan name (e.g., "Basic", "Premium", "Pro", "Plus") */
   name: string;
   /** Monthly price in USD */
   price: number;
