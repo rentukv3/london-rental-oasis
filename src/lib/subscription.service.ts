@@ -98,7 +98,8 @@ export async function createSubscription(
       .single();
     
     if (error) throw error;
-    return data as Subscription;
+    // Use type assertion to safely convert to Subscription type
+    return normalizeSubscription(data);
   } catch (error) {
     console.error('Error creating subscription:', error);
     toast({

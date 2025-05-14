@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Notification, NotificationType, NotificationStatus } from "@/types";
+import { Notification, NotificationType, NotificationStatus } from "@/types/notification.types";
 import { toast } from "@/components/ui/use-toast";
 
 /**

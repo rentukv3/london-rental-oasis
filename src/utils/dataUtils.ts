@@ -1,4 +1,4 @@
-import { Property, PropertyTypeValue, PropertyImage } from '@/types';
+import { Property, PropertyTypeValue, PropertyImage, PropertyFeatures } from '@/types';
 import { SubscriptionPlan, SubscriptionInterval, SubscriptionFeatures, Subscription, SubscriptionStatus } from '@/types/subscription.types';
 
 /**
@@ -184,7 +184,7 @@ export function normalizePropertyFeatures(features: any): PropertyFeatures {
   if (!features) return {};
   if (typeof features === 'string') {
     try {
-      return JSON.parse(features);
+      return JSON.parse(features) as PropertyFeatures;
     } catch (e) {
       return {};
     }

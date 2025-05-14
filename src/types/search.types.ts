@@ -8,6 +8,8 @@ export interface SearchCriteria {
   /** Minimum price */
   minPrice?: number;
   /** Maximum price */
+  priceMax?: number;
+  /** Maximum price (alternative name) */
   maxPrice?: number;
   /** Minimum number of bedrooms */
   minBedrooms?: number;
@@ -27,4 +29,6 @@ export interface SearchCriteria {
   availableFrom?: string | Date;
   /** Keywords to search for in title and description */
   keywords?: string;
+  /** Additional search parameters */
+  [key: string]: string | number | boolean | undefined | Date;
 }

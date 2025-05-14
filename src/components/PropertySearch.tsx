@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SearchCriteria, PropertyType } from '@/types';
+import { SearchCriteria } from '@/types/search.types';
+import { PropertyType } from '@/types/ui.types';
 import { Search } from 'lucide-react';
 
 interface PropertySearchProps {

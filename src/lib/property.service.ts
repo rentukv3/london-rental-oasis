@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Property, PropertyImage, PropertyFeatures } from "@/types";
+import { Property, PropertyImage, PropertyFeatures, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { toast } from "@/components/ui/use-toast";
 import { normalizeProperty, propertyToDbFormat, normalizePropertyFeatures } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
@@ -36,6 +36,9 @@ export async function getPublishedProperties(
     
     // Convert database objects to Property type objects
     const properties = data?.map(item => {
+      // First create the full location string from parts if needed
+      const location = item.location || `${item.address || ''}, ${item.city || ''}, ${item.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
+      
       const property: Partial<Property> = {
         id: item.id,
         title: item.title,
@@ -43,29 +46,29 @@ export async function getPublishedProperties(
         address: item.address,
         city: item.city,
         country: item.country,
-        location: item.location,
+        location: location,
         latitude: item.latitude,
         longitude: item.longitude,
         price: item.price,
         currency: item.currency,
-        propertyType: item.property_type,
+        propertyType: item.property_type as PropertyTypeValue,
         bedrooms: item.bedrooms,
         bathrooms: item.bathrooms,
         areaSqm: item.area_sqm,
         features: normalizePropertyFeatures(item.features),
-        images: item.images ? (Array.isArray(item.images) ? item.images : [item.images]) : [],
+        images: Array.isArray(item.images) ? item.images : (item.images ? [item.images] : []),
         virtualTourUrl: item.virtual_tour_url,
-        status: item.status,
+        status: item.status as PropertyStatus,
         availabilityDate: item.availability_date ? new Date(item.availability_date) : undefined,
         isFeatured: item.is_featured,
         featuredUntil: item.featured_until ? new Date(item.featured_until) : undefined,
-        adType: item.ad_type,
+        adType: item.ad_type as AdType,
         viewsCount: item.views_count,
         contactClicks: item.contact_clicks,
         listingCreatedAt: item.listing_created_at ? new Date(item.listing_created_at) : undefined,
         listingExpiresAt: item.listing_expires_at ? new Date(item.listing_expires_at) : undefined,
-        promotionStatus: item.promotion_status,
-        visibility: item.visibility,
+        promotionStatus: item.promotion_status as PromotionStatus,
+        visibility: item.visibility as PropertyVisibility,
         createdAt: item.created_at ? new Date(item.created_at) : undefined,
         updatedAt: item.updated_at ? new Date(item.updated_at) : undefined,
         userId: item.user_id
@@ -212,10 +215,14 @@ export async function createProperty(
       description: 'Your property listing has been created successfully.',
     });
     
-    return normalizeProperty({
+    // Use type assertion to handle the conversion
+    const normalizedData = {
       ...data,
-      features: normalizePropertyFeatures(data.features)
-    });
+      features: normalizePropertyFeatures(data.features),
+      images: Array.isArray(data.images) ? data.images as PropertyImage[] : (data.images ? [data.images as PropertyImage] : [])
+    };
+    
+    return normalizeProperty(normalizedData as Partial<Property>);
   } catch (error) {
     console.error('Error creating property:', error);
     toast({

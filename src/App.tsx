@@ -28,14 +28,19 @@ const queryClient = new QueryClient({
     queries: {
       retry: false,
       refetchOnWindowFocus: false,
-      // Use onError for React Query v4 compatibility
-      onError: (error) => {
-        console.error('Query error:', error);
+      // Use meta.onError for React Query v5+ compatibility
+      meta: {
+        onError: (error: Error) => {
+          console.error('Query error:', error);
+        }
       }
     },
     mutations: {
-      onError: (error) => {
-        console.error('Mutation error:', error);
+      // Use meta.onError for mutations
+      meta: {
+        onError: (error: Error) => {
+          console.error('Mutation error:', error);
+        }
       }
     }
   }

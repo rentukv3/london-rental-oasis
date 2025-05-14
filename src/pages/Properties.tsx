@@ -4,7 +4,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import PropertySearch from '@/components/PropertySearch';
-import { Property, SearchCriteria } from '@/types';
+import { Property } from '@/types';
+import { SearchCriteria } from '@/types/search.types';
 import { normalizeProperty, createPropertyImageFromUrl } from '@/utils/dataUtils';
 import { Button } from '@/components/ui/button';
 
