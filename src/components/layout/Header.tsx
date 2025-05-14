@@ -3,10 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../ui/logo';
 import { Button } from '@/components/ui/button';
 import { LogIn, Menu, X } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
@@ -16,7 +18,11 @@ const Header: React.FC = () => {
   };
 
   const handlePublish = () => {
-    // Aquí puedes poner la lógica de publicación si la tienes
+    if (!user) {
+      navigate('/auth/login');
+    } else {
+      navigate('/properties/publish');
+    }
   };
 
   const toggleMobileMenu = () => {
