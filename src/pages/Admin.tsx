@@ -37,12 +37,13 @@ const Admin = () => {
         })) : [];
         setActivities(activities);
 
-        const { data: statsData } = await supabase.from('admin_stats').select('*').single();
+        // Use the rpc function to get admin stats
+        const { data: statsData } = await supabase.rpc('get_admin_stats');
         if (statsData) {
           setStats({
-            totalUsers: statsData.total_users,
-            totalProperties: statsData.total_properties,
-            totalBookings: statsData.total_bookings,
+            totalUsers: statsData.totalUsers || 0,
+            totalProperties: statsData.totalProperties || 0,
+            totalBookings: statsData.totalBookings || 0,
           });
         }
 
