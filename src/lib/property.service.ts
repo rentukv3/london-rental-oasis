@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { PropertyFeatures } from "@/types/property.features";
@@ -7,15 +8,17 @@ import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscript
 import { Json } from "@/types/property.features";
 
 // Helper function to safely type cast Json to PropertyFeatures 
-const safelyConvertToPropertyFeatures = (jsonData: Json): PropertyFeatures => {
+const safelyConvertToPropertyFeatures = (jsonData: Json | null): PropertyFeatures => {
   if (typeof jsonData === 'object' && jsonData !== null) {
     return jsonData as PropertyFeatures;
   }
   return {} as PropertyFeatures;
 };
 
-// Helper function to safely type cast Json[] to PropertyImage[]
-const safelyConvertToPropertyImages = (jsonData: Json): PropertyImage[] => {
+// Helper function to safely type cast Json to PropertyImage[]
+const safelyConvertToPropertyImages = (jsonData: Json | null): PropertyImage[] => {
+  if (!jsonData) return [];
+  
   if (Array.isArray(jsonData)) {
     return jsonData.map(img => {
       if (typeof img === 'object' && img !== null) {

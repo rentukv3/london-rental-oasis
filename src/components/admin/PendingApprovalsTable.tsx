@@ -14,7 +14,7 @@ export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsT
       <TableHeader>
         <TableRow>
           <TableHead className="text-foreground">Tipo</TableHead>
-          <TableHead className="text-foreground">Detalles</TableHead>
+          <TableHead className="text-foreground">Estado</TableHead>
           <TableHead className="text-foreground">Fecha</TableHead>
           <TableHead className="text-foreground">Acciones</TableHead>
         </TableRow>
@@ -23,7 +23,7 @@ export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsT
         {approvals.map((approval) => (
           <TableRow key={approval.id}>
             <TableCell className="text-foreground">{approval.type}</TableCell>
-            <TableCell className="text-foreground">{approval.details || '-'}</TableCell>
+            <TableCell className="text-foreground">{approval.status}</TableCell>
             <TableCell className="text-foreground">
               {new Date(approval.created_at).toLocaleDateString()}
             </TableCell>
