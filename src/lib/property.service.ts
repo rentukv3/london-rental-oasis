@@ -18,19 +18,21 @@ const safelyConvertToPropertyFeatures = (jsonData: Json | null): PropertyFeature
 const safelyConvertToPropertyImages = (jsonData: Json | null): PropertyImage[] => {
   if (!jsonData) return [];
   
-  if (Array.isArray(jsonData)) {
-    // Handle array of images
-    return jsonData.map(img => {
-      if (typeof img === 'object' && img !== null) {
-        return {
-          url: typeof (img as any).url === 'string' ? (img as any).url : '',
-          publicId: typeof (img as any).publicId === 'string' ? (img as any).publicId : ''
-        };
-      }
+  // Simple check if it's an array
+  if (!Array.isArray(jsonData)) return [];
+  
+  // Map only if we're sure it's an array
+  return jsonData.map(img => {
+    if (typeof img !== 'object' || img === null) {
       return { url: '', publicId: '' };
-    });
-  }
-  return [];
+    }
+    
+    const imgObj = img as Record<string, unknown>;
+    return {
+      url: typeof imgObj.url === 'string' ? imgObj.url : '',
+      publicId: typeof imgObj.publicId === 'string' ? imgObj.publicId : ''
+    };
+  });
 };
 
 /**

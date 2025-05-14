@@ -53,14 +53,14 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       return [];
     }
     
-    // Transform and type the data properly with safe access to properties
+    // Transform and map the database fields to the PendingApproval interface
     return data.map(item => ({
       id: item.id,
-      user_id: item.user_id,
+      userId: item.user_id,
       type: item.type,
-      // Remove access to non-existent 'details' property
       status: item.status,
-      created_at: item.created_at
+      createdAt: new Date(item.created_at),
+      data: item.data || {}
     })) as PendingApproval[];
   } catch (error: any) {
     toast({
@@ -92,8 +92,8 @@ export async function getRecentActivities(): Promise<Activity[]> {
     return data.map(item => ({
       id: item.id,
       user_id: item.user_id,
-      type: item.action || '', // Map action to type with fallback
-      description: item.details || '', // Map details to description with fallback
+      type: item.action || '', 
+      description: item.details || '',
       created_at: item.created_at
     })) as Activity[];
   } catch (error: any) {

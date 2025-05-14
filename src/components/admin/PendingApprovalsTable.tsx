@@ -25,7 +25,7 @@ export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsT
             <TableCell className="text-foreground">{approval.type}</TableCell>
             <TableCell className="text-foreground">{approval.status}</TableCell>
             <TableCell className="text-foreground">
-              {new Date(approval.created_at).toLocaleDateString()}
+              {new Date(approval.createdAt).toLocaleDateString()}
             </TableCell>
             <TableCell>
               <Button 
