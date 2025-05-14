@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin/StatCard";
 import { ActivityTable } from "@/components/admin/ActivityTable";
 import { PendingApprovalsTable } from "@/components/admin/PendingApprovalsTable";
-import { getAdminStats, getPendingApprovals, getRecentActivities, PendingApproval, Activity, AdminStats } from "@/lib/admin.service";
-import { getTenants, createTenant, updateTenant, deleteTenant, Tenant } from "@/lib/tenant.service";
-import { getLandlords, createLandlord, updateLandlord, deleteLandlord, Landlord } from "@/lib/landlord.service";
-import { getBookings, createBooking, updateBooking, deleteBooking, Booking } from "@/lib/booking.service";
+import { getAdminStats, getPendingApprovals, getRecentActivities, approveItem, rejectItem } from "@/lib/admin.service";
+import { getTenants, createTenant, updateTenant, deleteTenant } from "@/lib/tenant.service";
+import { getLandlords, createLandlord, updateLandlord, deleteLandlord } from "@/lib/landlord.service";
+import { getBookings, createBooking, updateBooking, deleteBooking } from "@/lib/booking.service";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Componente de carga personalizado con los colores del proyecto
 function LoadingSpinner() {
@@ -42,7 +41,8 @@ export default function Admin() {
   async function fetchAll() {
     setLoading(true);
     try {
-      const [stats, approvals, activities, tenants, landlords, bookings] = await Promise.all([
+      // Use Promise.allSettled to prevent one failed request from blocking others
+      const results = await Promise.allSettled([
         getAdminStats(),
         getPendingApprovals(),
         getRecentActivities(),
@@ -50,12 +50,31 @@ export default function Admin() {
         getLandlords(),
         getBookings(),
       ]);
-      setStats(stats);
-      setPendingApprovals(approvals);
-      setActivities(activities);
-      setTenants(tenants);
-      setLandlords(landlords);
-      setBookings(bookings);
+      
+      // Process each result individually
+      if (results[0].status === 'fulfilled') {
+        setStats(results[0].value);
+      }
+      
+      if (results[1].status === 'fulfilled') {
+        setPendingApprovals(results[1].value);
+      }
+      
+      if (results[2].status === 'fulfilled') {
+        setActivities(results[2].value);
+      }
+      
+      if (results[3].status === 'fulfilled') {
+        setTenants(results[3].value);
+      }
+      
+      if (results[4].status === 'fulfilled') {
+        setLandlords(results[4].value);
+      }
+      
+      if (results[5].status === 'fulfilled') {
+        setBookings(results[5].value);
+      }
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
@@ -475,4 +494,4 @@ export default function Admin() {
       </Tabs>
     </div>
   );
-} 
+}

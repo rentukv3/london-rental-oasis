@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -27,31 +28,46 @@ export type LandlordInsert = Omit<Landlord, 'id' | 'created_at' | 'updated_at'>;
 export type LandlordUpdate = Partial<LandlordInsert>;
 
 export async function getLandlords(): Promise<Landlord[]> {
-  const { data, error } = await supabase
-    .from('landlords')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    // Use a raw SQL query since the table might not be in the generated types
+    const { data, error } = await supabase.rpc('get_landlords');
 
-  if (error) {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+
+    return data as unknown as Landlord[];
+  } catch (error: any) {
     toast({
       title: "Error",
       description: error.message,
       variant: "destructive",
     });
-    throw error;
+    return [];
   }
-
-  return data;
 }
 
 export async function createLandlord(landlord: LandlordInsert): Promise<Landlord | null> {
-  const { data, error } = await supabase
-    .from('landlords')
-    .insert(landlord)
-    .select()
-    .single();
+  try {
+    // Use a raw SQL query since the table might not be in the generated types
+    const { data, error } = await supabase.rpc('create_landlord', landlord);
 
-  if (error) {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    return data as unknown as Landlord;
+  } catch (error: any) {
     toast({
       title: "Error",
       description: error.message,
@@ -59,19 +75,27 @@ export async function createLandlord(landlord: LandlordInsert): Promise<Landlord
     });
     return null;
   }
-
-  return data;
 }
 
 export async function updateLandlord(id: string, landlord: LandlordUpdate): Promise<Landlord | null> {
-  const { data, error } = await supabase
-    .from('landlords')
-    .update(landlord)
-    .eq('id', id)
-    .select()
-    .single();
+  try {
+    // Use a raw SQL query since the table might not be in the generated types
+    const { data, error } = await supabase.rpc('update_landlord', {
+      landlord_id: id,
+      ...landlord
+    });
 
-  if (error) {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    return data as unknown as Landlord;
+  } catch (error: any) {
     toast({
       title: "Error",
       description: error.message,
@@ -79,17 +103,24 @@ export async function updateLandlord(id: string, landlord: LandlordUpdate): Prom
     });
     return null;
   }
-
-  return data;
 }
 
 export async function deleteLandlord(id: string): Promise<boolean> {
-  const { error } = await supabase
-    .from('landlords')
-    .delete()
-    .eq('id', id);
+  try {
+    // Use a raw SQL query since the table might not be in the generated types
+    const { error } = await supabase.rpc('delete_landlord', { landlord_id: id });
 
-  if (error) {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error: any) {
     toast({
       title: "Error",
       description: error.message,
@@ -97,6 +128,4 @@ export async function deleteLandlord(id: string): Promise<boolean> {
     });
     return false;
   }
-
-  return true;
 } 
