@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { PropertyFeatures } from "@/types/property.features";
 import { toast } from "@/components/ui/use-toast";
-import { normalizeProperty, propertyToDbFormat, normalizePropertyFeatures } from "@/utils/dataUtils";
+import { normalizeProperty, propertyToDbFormat, normalizePropertyImages, normalizePropertyFeatures } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
 import { Json } from "@/types/property.features";
 
@@ -38,81 +38,7 @@ export async function getPublishedProperties(
     if (!data) return { properties: [], count: 0 };
     
     // Convert database objects to Property type objects
-    const properties = data.map(item => {
-      // First create the full location string from parts
-      let locationStr = '';
-      if (item.address) locationStr += item.address;
-      if (item.city) locationStr += (locationStr ? ', ' : '') + item.city;
-      if (item.country) locationStr += (locationStr ? ', ' : '') + item.country;
-      
-      // Parse features as PropertyFeatures
-      let features: PropertyFeatures = {};
-      if (item.features) {
-        if (typeof item.features === 'string') {
-          try {
-            features = JSON.parse(item.features) as PropertyFeatures;
-          } catch (e) {
-            console.error('Error parsing features', e);
-          }
-        } else {
-          features = item.features as unknown as PropertyFeatures;
-        }
-      }
-      
-      // Handle images parsing
-      let images: PropertyImage[] = [];
-      if (item.images) {
-        if (Array.isArray(item.images)) {
-          images = item.images as unknown as PropertyImage[];
-        } else if (typeof item.images === 'string') {
-          try {
-            images = JSON.parse(item.images) as PropertyImage[];
-          } catch (e) {
-            console.error('Error parsing images', e);
-          }
-        } else if (typeof item.images === 'object') {
-          images = [item.images as unknown as PropertyImage];
-        }
-      }
-      
-      // Create the property object with proper type assertions
-      const property: Property = {
-        id: item.id,
-        title: item.title,
-        description: item.description || '',
-        address: item.address || '',
-        city: item.city || '',
-        country: item.country || '',
-        location: locationStr,
-        latitude: item.latitude || 0,
-        longitude: item.longitude || 0,
-        price: item.price || 0,
-        currency: item.currency || 'USD',
-        propertyType: item.property_type as PropertyTypeValue || 'apartment',
-        bedrooms: item.bedrooms || 0,
-        bathrooms: item.bathrooms || 0,
-        areaSqm: item.area_sqm || 0,
-        features: features,
-        images: images,
-        virtualTourUrl: item.virtual_tour_url || '',
-        status: item.status as PropertyStatus,
-        availabilityDate: item.availability_date ? new Date(item.availability_date) : undefined,
-        isFeatured: Boolean(item.is_featured),
-        featuredUntil: item.featured_until ? new Date(item.featured_until) : undefined,
-        adType: item.ad_type as AdType,
-        viewsCount: item.views_count || 0,
-        contactClicks: item.contact_clicks || 0,
-        listingCreatedAt: item.listing_created_at ? new Date(item.listing_created_at) : undefined,
-        listingExpiresAt: item.listing_expires_at ? new Date(item.listing_expires_at) : undefined,
-        promotionStatus: item.promotion_status as PromotionStatus || 'inactive',
-        visibility: item.visibility as PropertyVisibility || 'public',
-        createdAt: item.created_at ? new Date(item.created_at) : undefined,
-        updatedAt: item.updated_at ? new Date(item.updated_at) : undefined,
-        userId: item.user_id
-      };
-      
-      return property;
-    });
+    const properties = data.map(normalizeProperty);
     
     return { 
       properties, 
@@ -210,7 +136,7 @@ export async function createProperty(
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + plan.listingDuration);
     
-    // Convert property to database format with proper typing
+    // Create database property object
     const dbProperty: any = {
       user_id: userId,
       title: property.title,
@@ -226,14 +152,14 @@ export async function createProperty(
       bedrooms: property.bedrooms,
       bathrooms: property.bathrooms,
       area_sqm: property.areaSqm,
-      features: property.features ? JSON.stringify(property.features) : null,
+      features: property.features,
       images: property.images,
       virtual_tour_url: property.virtualTourUrl,
       status: 'draft',
       availability_date: property.availabilityDate?.toISOString(),
       is_featured: property.isFeatured || false,
       ad_type: property.adType || 'standard',
-      listing_expires_at: property.listingExpiresAt?.toISOString(),
+      listing_expires_at: expirationDate.toISOString(),
       visibility: property.visibility || 'public',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -252,16 +178,7 @@ export async function createProperty(
       description: 'Your property listing has been created successfully.',
     });
     
-    // Use type assertion to handle the conversion
-    const normalizedData = {
-      ...data,
-      features: normalizePropertyFeatures(data.features as Json),
-      images: Array.isArray(data.images) 
-        ? (data.images as Json[]).map(img => img as unknown as PropertyImage) 
-        : (data.images ? [data.images as unknown as PropertyImage] : [])
-    };
-    
-    return normalizeProperty(normalizedData as unknown as Partial<Property>);
+    return normalizeProperty(data);
   } catch (error) {
     console.error('Error creating property:', error);
     toast({
@@ -428,7 +345,7 @@ export async function updatePropertyImages(
     const { error } = await supabase
       .from('properties')
       .update({
-        images: images as unknown as Json[],
+        images: images,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);
