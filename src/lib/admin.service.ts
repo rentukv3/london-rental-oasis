@@ -53,12 +53,12 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       return [];
     }
     
-    // Transform and type the data properly
+    // Transform and type the data properly with safe access to properties
     return data.map(item => ({
       id: item.id,
       user_id: item.user_id,
       type: item.type,
-      details: item.details || '', // Ensure details exists with a default value
+      details: item.details ?? '', // Use nullish coalescing to handle missing details property
       status: item.status,
       created_at: item.created_at
     })) as PendingApproval[];

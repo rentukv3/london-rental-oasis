@@ -2,6 +2,7 @@
 // JavaScript version of verify-env.ts
 const fs = require('fs');
 const path = require('path');
+const dotenv = require('dotenv');
 
 // Define required environment variables
 const requiredEnvVars = [
@@ -11,32 +12,30 @@ const requiredEnvVars = [
   'VITE_APP_NAME'
 ];
 
-// Check if .env.production file exists
-const envPath = path.resolve(process.cwd(), '.env.production');
-if (!fs.existsSync(envPath)) {
-  console.error('Error: .env.production file not found');
-  process.exit(1);
+// Check if .env file exists
+const envPath = path.resolve(process.cwd(), '.env');
+const prodEnvPath = path.resolve(process.cwd(), '.env.production');
+
+// Try to load from .env or .env.production
+let envVars = {};
+
+if (fs.existsSync(envPath)) {
+  const envContent = dotenv.parse(fs.readFileSync(envPath));
+  envVars = { ...envVars, ...envContent };
 }
 
-// Read and parse .env.production
-const envContent = fs.readFileSync(envPath, 'utf8');
-const envVars = envContent.split('\n').reduce((acc, line) => {
-  const match = line.match(/^(\w+)=(.*)$/);
-  if (match) {
-    const [, key, value] = match;
-    acc[key] = value;
-  }
-  return acc;
-}, {});
+if (fs.existsSync(prodEnvPath)) {
+  const prodEnvContent = dotenv.parse(fs.readFileSync(prodEnvPath));
+  envVars = { ...envVars, ...prodEnvContent };
+}
 
 // Check if all required variables are defined
 const missingVars = requiredEnvVars.filter(varName => {
-  const value = envVars[varName];
-  return value === undefined || value === '' || value.includes('${');
+  return !envVars[varName] || envVars[varName] === '' || envVars[varName].includes('${');
 });
 
 if (missingVars.length > 0) {
-  console.error(`Error: Missing required environment variables in .env.production: ${missingVars.join(', ')}`);
+  console.error(`Error: Missing required environment variables: ${missingVars.join(', ')}`);
   process.exit(1);
 } else {
   console.log('Environment variables validation passed!');

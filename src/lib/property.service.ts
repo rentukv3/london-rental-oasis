@@ -6,6 +6,30 @@ import { normalizeProperty, propertyToDbFormat, normalizePropertyImages, normali
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
 import { Json } from "@/types/property.features";
 
+// Helper function to safely type cast Json to PropertyFeatures 
+const safelyConvertToPropertyFeatures = (jsonData: Json): PropertyFeatures => {
+  if (typeof jsonData === 'object' && jsonData !== null) {
+    return jsonData as PropertyFeatures;
+  }
+  return {} as PropertyFeatures;
+};
+
+// Helper function to safely type cast Json[] to PropertyImage[]
+const safelyConvertToPropertyImages = (jsonData: Json): PropertyImage[] => {
+  if (Array.isArray(jsonData)) {
+    return jsonData.map(img => {
+      if (typeof img === 'object' && img !== null) {
+        return {
+          url: (img as any).url || '',
+          publicId: (img as any).publicId || ''
+        };
+      }
+      return { url: '', publicId: '' };
+    });
+  }
+  return [];
+};
+
 /**
  * Fetch all published properties
  */
@@ -37,8 +61,16 @@ export async function getPublishedProperties(
     
     if (!data) return { properties: [], count: 0 };
     
-    // Convert database objects to Property type objects
-    const properties = data.map(normalizeProperty);
+    // Convert database objects to Property type objects with safe conversions
+    const properties = data.map(item => {
+      // Apply safe conversions to the property data
+      const propertyData = {
+        ...item,
+        features: safelyConvertToPropertyFeatures(item.features),
+        images: safelyConvertToPropertyImages(item.images)
+      };
+      return normalizeProperty(propertyData);
+    });
     
     return { 
       properties, 
@@ -71,7 +103,14 @@ export async function getPropertyById(id: string): Promise<Property | null> {
     // Increment view count asynchronously
     incrementViewCount(id).catch(console.error);
     
-    return normalizeProperty(data);
+    // Apply safe conversions
+    const propertyData = {
+      ...data,
+      features: safelyConvertToPropertyFeatures(data.features),
+      images: safelyConvertToPropertyImages(data.images)
+    };
+    
+    return normalizeProperty(propertyData);
   } catch (error) {
     console.error('Error fetching property:', error);
     return null;
@@ -91,7 +130,15 @@ export async function getUserProperties(userId: string): Promise<Property[]> {
     
     if (error) throw error;
     
-    return data?.map(normalizeProperty) || [];
+    // Apply safe conversions
+    return data?.map(item => {
+      const propertyData = {
+        ...item,
+        features: safelyConvertToPropertyFeatures(item.features),
+        images: safelyConvertToPropertyImages(item.images)
+      };
+      return normalizeProperty(propertyData);
+    }) || [];
   } catch (error) {
     console.error('Error fetching user properties:', error);
     toast({
@@ -342,10 +389,16 @@ export async function updatePropertyImages(
   images: PropertyImage[]
 ): Promise<boolean> {
   try {
+    // Convert PropertyImage[] to Json compatible format
+    const jsonImages = images.map(img => ({
+      url: img.url,
+      publicId: img.publicId
+    })) as unknown as Json;
+    
     const { error } = await supabase
       .from('properties')
       .update({
-        images: images,
+        images: jsonImages,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);
