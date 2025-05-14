@@ -1,27 +1,53 @@
 
+/**
+ * Types of notifications that can be sent
+ */
+export type NotificationType = 
+  | 'booking'     // Booking related notification
+  | 'property'    // Property related notification
+  | 'payment'     // Payment related notification
+  | 'system'      // System notification
+  | 'message'     // New message notification
+  | 'maintenance' // Maintenance related notification
+  | 'subscription'; // Subscription related notification
+
+/**
+ * Notification status
+ */
+export type NotificationStatus = 'sent' | 'read' | 'archived' | 'deleted';
+
+/**
+ * Notification model
+ */
 export interface Notification {
+  /** Unique identifier */
   id: string;
-  user_id: string;
+  /** User ID the notification is for */
+  userId: string;
+  /** Type of notification */
   type: NotificationType;
+  /** Notification message */
   message: string;
-  data: any;
+  /** Additional data related to the notification */
+  data?: any;
+  /** Status of the notification */
   status: NotificationStatus;
-  read_at: string | null;
-  created_at: string;
+  /** When the notification was created */
+  createdAt: Date;
+  /** When the notification was read (if read) */
+  readAt?: Date;
 }
 
-export type NotificationType = 
-  | 'booking_request'
-  | 'booking_approved'
-  | 'booking_rejected'
-  | 'property_approved'
-  | 'property_rejected'
-  | 'system'
-  | 'subscription'
-  | 'property'
-  | 'payment';
-
-export type NotificationStatus = 'sent' | 'delivered' | 'read';
-
-export type NotificationInsert = Omit<Notification, 'id' | 'created_at'>;
-export type NotificationUpdate = Partial<Omit<Notification, 'id' | 'created_at'>>;
+/**
+ * Notification with JSON data structure from database
+ */
+export interface RawNotification {
+  id: string;
+  user_id: string;
+  type: string;
+  message: string;
+  data: any;
+  status: string;
+  created_at: string;
+  read_at: string | null;
+}

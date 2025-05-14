@@ -1,1 +1,26 @@
+
 project_id = "ersrbvsildiudrojsebk"
+
+[functions.get-landlords]
+verify_jwt = true
+
+[functions.create-landlord]
+verify_jwt = true
+
+[functions.update-landlord]
+verify_jwt = true
+
+[functions.delete-landlord]
+verify_jwt = true
+
+[functions.get-tenants]
+verify_jwt = true
+
+[functions.create-tenant]
+verify_jwt = true
+
+[functions.update-tenant]
+verify_jwt = true
+
+[functions.delete-tenant]
+verify_jwt = true

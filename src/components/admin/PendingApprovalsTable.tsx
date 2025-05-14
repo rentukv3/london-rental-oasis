@@ -1,6 +1,7 @@
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PendingApproval } from "@/lib/admin.service";
+import { PendingApproval } from "@/types/admin.types";
 
 interface PendingApprovalsTableProps {
   approvals: PendingApproval[];
@@ -22,7 +23,7 @@ export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsT
         {approvals.map((approval) => (
           <TableRow key={approval.id}>
             <TableCell className="text-foreground">{approval.type}</TableCell>
-            <TableCell className="text-foreground">{approval.details}</TableCell>
+            <TableCell className="text-foreground">{approval.details || '-'}</TableCell>
             <TableCell className="text-foreground">
               {new Date(approval.created_at).toLocaleDateString()}
             </TableCell>

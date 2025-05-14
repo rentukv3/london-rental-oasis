@@ -1,5 +1,6 @@
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Activity } from "@/lib/admin.service";
+import { Activity } from "@/types/admin.types";
 
 interface ActivityTableProps {
   activities: Activity[];

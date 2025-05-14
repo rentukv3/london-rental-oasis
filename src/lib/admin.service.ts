@@ -1,27 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-
-export interface AdminStats {
-  totalUsers: number;
-  totalProperties: number;
-  totalBookings: number;
-}
-
-export interface PendingApproval {
-  id: string;
-  user_id: string;
-  type: string;
-  status: string;
-  created_at: string;
-}
-
-export interface Activity {
-  id: string;
-  user_id: string;
-  action: string;
-  details: string;
-  created_at: string;
-}
+import { AdminStats, PendingApproval, Activity } from "@/types/admin.types";
 
 export async function getAdminStats(): Promise<AdminStats> {
   try {
@@ -37,7 +17,7 @@ export async function getAdminStats(): Promise<AdminStats> {
     }
     
     // Cast data to AdminStats to ensure it has the right shape
-    return data as unknown as AdminStats;
+    return data as AdminStats;
   } catch (error: any) {
     toast({
       title: "Error",
@@ -64,7 +44,10 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       return [];
     }
     
-    return data as PendingApproval[];
+    return data.map(item => ({
+      ...item,
+      details: item.details || ''
+    })) as PendingApproval[];
   } catch (error: any) {
     toast({
       title: "Error",
@@ -92,7 +75,13 @@ export async function getRecentActivities(): Promise<Activity[]> {
       return [];
     }
     
-    return data as Activity[];
+    return data.map(item => ({
+      id: item.id,
+      user_id: item.user_id,
+      type: item.action, // Map action to type
+      description: item.details, // Map details to description
+      created_at: item.created_at
+    })) as Activity[];
   } catch (error: any) {
     toast({
       title: "Error",
