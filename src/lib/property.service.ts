@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { PropertyFeatures } from "@/types/property.features";
@@ -20,11 +19,12 @@ const safelyConvertToPropertyImages = (jsonData: Json | null): PropertyImage[] =
   if (!jsonData) return [];
   
   if (Array.isArray(jsonData)) {
+    // Handle array of images
     return jsonData.map(img => {
       if (typeof img === 'object' && img !== null) {
         return {
-          url: (img as any).url || '',
-          publicId: (img as any).publicId || ''
+          url: typeof (img as any).url === 'string' ? (img as any).url : '',
+          publicId: typeof (img as any).publicId === 'string' ? (img as any).publicId : ''
         };
       }
       return { url: '', publicId: '' };
