@@ -123,6 +123,51 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          company: string | null
+          created_at: string | null
+          display_name: string | null
+          first_name: string | null
+          id: string
+          is_verified_agent: boolean | null
+          last_name: string | null
+          phone: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          first_name?: string | null
+          id: string
+          is_verified_agent?: boolean | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          first_name?: string | null
+          id?: string
+          is_verified_agent?: boolean | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           ad_type: string
