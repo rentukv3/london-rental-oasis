@@ -112,7 +112,7 @@ export default function SubscriptionPlans() {
               </FeatureItem>
               
               <FeatureItem checked={true}>
-                {plan.listing_duration} day listing duration
+                {plan.listingDuration} day listing duration
               </FeatureItem>
               
               <FeatureItem checked={plan.features?.listingPriority !== 'standard'}>

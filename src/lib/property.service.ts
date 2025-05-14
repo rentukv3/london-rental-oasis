@@ -1,7 +1,8 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage } from "@/types";
 import { toast } from "@/components/ui/use-toast";
-import { normalizeProperty } from "@/utils/dataUtils";
+import { normalizeProperty, propertyToDbFormat } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
 
 /**
@@ -130,7 +131,7 @@ export async function createProperty(
     expirationDate.setDate(expirationDate.getDate() + plan.listingDuration);
     
     const propertyData = {
-      ...property,
+      ...propertyToDbFormat(property),
       user_id: userId,
       status: 'draft',
       listing_expires_at: expirationDate.toISOString(),
@@ -171,12 +172,14 @@ export async function updateProperty(
   property: Partial<Property>
 ): Promise<Property | null> {
   try {
+    const updateData = {
+      ...propertyToDbFormat(property),
+      updated_at: new Date().toISOString(),
+    };
+    
     const { data, error } = await supabase
       .from('properties')
-      .update({
-        ...property,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
@@ -316,7 +319,7 @@ export async function updatePropertyImages(
     const { error } = await supabase
       .from('properties')
       .update({
-        images,
+        images: JSON.stringify(images),
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);

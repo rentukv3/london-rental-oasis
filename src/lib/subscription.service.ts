@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionPlan, Subscription, SubscriptionStatus } from "@/types";
 import { toast } from "@/components/ui/use-toast";
+import { normalizeSubscriptionPlan, normalizeSubscription } from "@/utils/dataUtils";
 
 /**
  * Fetch all available subscription plans
@@ -14,7 +15,7 @@ export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
       .order('price', { ascending: true });
     
     if (error) throw error;
-    return data as SubscriptionPlan[];
+    return data.map(normalizeSubscriptionPlan);
   } catch (error) {
     console.error('Error fetching subscription plans:', error);
     toast({
@@ -38,7 +39,7 @@ export async function getSubscriptionPlanById(planId: string): Promise<Subscript
       .single();
     
     if (error) throw error;
-    return data as SubscriptionPlan;
+    return normalizeSubscriptionPlan(data);
   } catch (error) {
     console.error('Error fetching subscription plan:', error);
     return null;
@@ -65,7 +66,7 @@ export async function getCurrentUserSubscription(userId: string): Promise<Subscr
       }
       throw error;
     }
-    return data as unknown as Subscription;
+    return normalizeSubscription(data);
   } catch (error) {
     console.error('Error fetching current user subscription:', error);
     return null;
