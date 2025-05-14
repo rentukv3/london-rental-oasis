@@ -29,13 +29,17 @@ const queryClient = new QueryClient({
       retry: false,
       refetchOnWindowFocus: false,
       // Properly handle errors to prevent app crashes
-      onError: (error) => {
-        console.error('Query error:', error);
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Query error:', error);
+        }
       }
     },
     mutations: {
-      onError: (error) => {
-        console.error('Mutation error:', error);
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Mutation error:', error);
+        }
       }
     }
   }
@@ -50,29 +54,29 @@ const App = () => (
       <TooltipProvider>
         <AuthProvider>
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/properties" element={<Properties />} />
-              <Route path="/property/:id" element={<PropertyDetails />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/register" element={<Register />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/bookings" element={<Bookings />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AnalyticsMiddleware>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/property/:id" element={<PropertyDetails />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/register" element={<Register />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/bookings" element={<Bookings />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AnalyticsMiddleware>
+          
+            {/* Move toasters outside of router to prevent rendering issues */}
+            <Toaster />
+            <Sonner />
           </BrowserRouter>
-          
-          {/* Move toasters outside of router to prevent rendering issues */}
-          <Toaster />
-          <Sonner />
-          
-          <AnalyticsMiddleware />
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
