@@ -1,11 +1,6 @@
-
-// Main types barrel file - exports all types from the project
-
-export * from './subscription.types';
 export * from './property.types';
-export * from './notification.types';
-export * from './payment.types';
-export * from './user.types';
-export * from './push.types';
-export * from './api.types';
-export * from './ui.types';
+export * from './search.types';
+export * from './testimonial.types';
+export * from './faq.types';
+export * from './subscription.types';
+export * from './property.features';

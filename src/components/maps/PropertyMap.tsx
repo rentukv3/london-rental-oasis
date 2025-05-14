@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Property } from '@/types';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -29,38 +28,52 @@ export const PropertyMap = ({
   center = [51.505, -0.09], // London default
   zoom = 13,
 }: PropertyMapProps) => {
+  // Use a ref for map container
+  const mapRef = React.useRef<HTMLDivElement>(null);
+  
+  // Initialize map after component mounts
+  React.useEffect(() => {
+    if (!mapRef.current) return;
+    
+    // Create map instance
+    const map = L.map(mapRef.current).setView(center, zoom);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Add markers for each property
+    properties.forEach(property => {
+      if (!property.latitude || !property.longitude) return;
+      
+      const marker = L.marker([property.latitude, property.longitude]).addTo(map);
+      
+      // Add popup with property info
+      marker.bindPopup(`
+        <div>
+          <h3 class="font-bold">${property.title}</h3>
+          <p>${property.price || 'Price not specified'} ${property.currency || 'GBP'}</p>
+          <a href="/property/${property.id}" class="text-blue-500 hover:underline">
+            View Details
+          </a>
+        </div>
+      `);
+    });
+    
+    // Clean up on unmount
+    return () => {
+      map.remove();
+    };
+  }, [properties, center, zoom]);
+  
   return (
-    <MapContainer
+    <div 
+      ref={mapRef}
       style={{ height: '400px', width: '100%' }}
-      zoom={zoom}
-      center={center as L.LatLngExpression}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {properties.map((property) => {
-        if (!property.latitude || !property.longitude) return null;
-        return (
-          <Marker
-            key={property.id}
-            position={[property.latitude, property.longitude] as L.LatLngExpression}
-          >
-            <Popup>
-              <div>
-                <h3 className="font-bold">{property.title}</h3>
-                <p>{property.price} {property.currency}</p>
-                <a
-                  href={`/properties/${property.id}`}
-                  className="text-blue-500 hover:underline"
-                >
-                  View Details
-                </a>
-              </div>
-            </Popup>
-          </Marker>
-        );
-      })}
-    </MapContainer>
+      className="rounded-lg shadow-md"
+    />
   );
 };
+
+export default PropertyMap;
