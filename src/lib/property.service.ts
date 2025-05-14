@@ -1,9 +1,9 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Property, PropertyImage, PropertyFeatures, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
 import { toast } from "@/components/ui/use-toast";
 import { normalizeProperty, propertyToDbFormat, normalizePropertyFeatures } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
+import { Json } from "@/types/property.features";
 
 /**
  * Fetch all published properties
@@ -37,7 +37,7 @@ export async function getPublishedProperties(
     // Convert database objects to Property type objects
     const properties = data?.map(item => {
       // First create the full location string from parts if needed
-      const location = item.location || `${item.address || ''}, ${item.city || ''}, ${item.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
+      const locationStr = `${item.address || ''}, ${item.city || ''}, ${item.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
       
       const property: Partial<Property> = {
         id: item.id,
@@ -46,7 +46,7 @@ export async function getPublishedProperties(
         address: item.address,
         city: item.city,
         country: item.country,
-        location: location,
+        location: locationStr,
         latitude: item.latitude,
         longitude: item.longitude,
         price: item.price,
@@ -55,8 +55,10 @@ export async function getPublishedProperties(
         bedrooms: item.bedrooms,
         bathrooms: item.bathrooms,
         areaSqm: item.area_sqm,
-        features: normalizePropertyFeatures(item.features),
-        images: Array.isArray(item.images) ? item.images : (item.images ? [item.images] : []),
+        features: normalizePropertyFeatures(item.features as Json),
+        images: Array.isArray(item.images) 
+          ? (item.images as Json[]).map(img => img as unknown as PropertyImage) 
+          : (item.images ? [item.images as unknown as PropertyImage] : []),
         virtualTourUrl: item.virtual_tour_url,
         status: item.status as PropertyStatus,
         availabilityDate: item.availability_date ? new Date(item.availability_date) : undefined,
@@ -74,7 +76,7 @@ export async function getPublishedProperties(
         userId: item.user_id
       };
       
-      return normalizeProperty(property);
+      return normalizeProperty(property as Partial<Property>);
     }) || [];
     
     return { 
@@ -196,7 +198,7 @@ export async function createProperty(
       availability_date: property.availabilityDate?.toISOString(),
       is_featured: property.isFeatured || false,
       ad_type: property.adType || 'standard',
-      listing_expires_at: expirationDate.toISOString(),
+      listing_expires_at: property.listingExpiresAt?.toISOString(),
       visibility: property.visibility || 'public',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -218,11 +220,13 @@ export async function createProperty(
     // Use type assertion to handle the conversion
     const normalizedData = {
       ...data,
-      features: normalizePropertyFeatures(data.features),
-      images: Array.isArray(data.images) ? data.images as PropertyImage[] : (data.images ? [data.images as PropertyImage] : [])
+      features: normalizePropertyFeatures(data.features as Json),
+      images: Array.isArray(data.images) 
+        ? (data.images as Json[]).map(img => img as unknown as PropertyImage) 
+        : (data.images ? [data.images as unknown as PropertyImage] : [])
     };
     
-    return normalizeProperty(normalizedData as Partial<Property>);
+    return normalizeProperty(normalizedData as unknown as Partial<Property>);
   } catch (error) {
     console.error('Error creating property:', error);
     toast({
@@ -389,7 +393,7 @@ export async function updatePropertyImages(
     const { error } = await supabase
       .from('properties')
       .update({
-        images: JSON.stringify(images),
+        images: images as unknown as Json[],
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);

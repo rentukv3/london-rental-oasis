@@ -1,26 +1,55 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { AdminStats, PendingApproval, Activity } from "@/types";
-import { Json } from "@/integrations/supabase/types";
+
+export interface AdminStats {
+  totalUsers: number;
+  totalProperties: number;
+  totalBookings: number;
+}
+
+export interface PendingApproval {
+  id: string;
+  user_id: string;
+  type: string;
+  status: string;
+  created_at: string;
+}
+
+export interface Activity {
+  id: string;
+  user_id: string;
+  action: string;
+  details: string;
+  created_at: string;
+}
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const { data, error } = await supabase.rpc('get_admin_stats');
-  if (error) {
+  try {
+    const { data, error } = await supabase.rpc('get_admin_stats');
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return { totalUsers: 0, totalProperties: 0, totalBookings: 0 };
+    }
+    
+    // Cast data to AdminStats to ensure it has the right shape
+    return data as unknown as AdminStats;
+  } catch (error: any) {
     toast({
       title: "Error",
-      description: error.message,
+      description: error.message || "Failed to fetch admin stats",
       variant: "destructive",
     });
-    throw error;
+    return { totalUsers: 0, totalProperties: 0, totalBookings: 0 };
   }
-  // Use type assertion to fix type conversion
-  return data as unknown as AdminStats;
 }
 
 export async function getPendingApprovals(): Promise<PendingApproval[]> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
     const { data, error } = await supabase
       .from('pending_approvals')
       .select('*')
@@ -32,22 +61,22 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
         description: error.message,
         variant: "destructive",
       });
-      throw error;
+      return [];
     }
-    return data as unknown as PendingApproval[];
+    
+    return data as PendingApproval[];
   } catch (error: any) {
     toast({
       title: "Error",
-      description: error.message,
+      description: error.message || "Failed to fetch pending approvals",
       variant: "destructive",
     });
-    throw error;
+    return [];
   }
 }
 
 export async function getRecentActivities(): Promise<Activity[]> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
     const { data, error } = await supabase
       .from('activities')
       .select('*')
@@ -60,57 +89,16 @@ export async function getRecentActivities(): Promise<Activity[]> {
         description: error.message,
         variant: "destructive",
       });
-      throw error;
+      return [];
     }
-    return data as unknown as Activity[];
+    
+    return data as Activity[];
   } catch (error: any) {
     toast({
       title: "Error",
-      description: error.message,
+      description: error.message || "Failed to fetch recent activities",
       variant: "destructive",
     });
-    throw error;
-  }
-}
-
-export async function approveItem(id: string, type: string): Promise<void> {
-  try {
-    const { error } = await supabase.rpc('approve_item', { item_id: id, item_type: type });
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      throw error;
-    }
-  } catch (error: any) {
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    });
-    throw error;
-  }
-}
-
-export async function rejectItem(id: string, type: string): Promise<void> {
-  try {
-    const { error } = await supabase.rpc('reject_item', { item_id: id, item_type: type });
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      throw error;
-    }
-  } catch (error: any) {
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    });
-    throw error;
+    return [];
   }
 }

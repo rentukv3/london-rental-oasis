@@ -1,14 +1,27 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
 export interface Landlord {
   id: string;
+  user_id: string;
   first_name: string;
   last_name: string;
   email: string;
+  phone?: string;
+  company_name?: string;
+  company_registration?: string;
+  address?: string;
+  city?: string;
+  country?: string;
   status: string;
   verification_status: string;
+  subscription_status?: string;
+  subscription_id?: string;
+  notes?: string;
+  documents?: any;
   created_at: string;
+  updated_at?: string;
 }
 
 export type LandlordInsert = Omit<Landlord, 'id' | 'created_at' | 'updated_at'>;
@@ -16,7 +29,7 @@ export type LandlordUpdate = Partial<LandlordInsert>;
 
 export async function getLandlords(): Promise<Landlord[]> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
+    // Use a stored function instead of a direct table query
     const { data, error } = await supabase.rpc('get_landlords');
 
     if (error) {
@@ -28,7 +41,7 @@ export async function getLandlords(): Promise<Landlord[]> {
       throw error;
     }
 
-    return data as unknown as Landlord[];
+    return data as Landlord[];
   } catch (error: any) {
     toast({
       title: "Error",
@@ -41,8 +54,10 @@ export async function getLandlords(): Promise<Landlord[]> {
 
 export async function createLandlord(landlord: LandlordInsert): Promise<Landlord | null> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
-    const { data, error } = await supabase.rpc('create_landlord', landlord);
+    // Use a stored function instead of a direct table insert
+    const { data, error } = await supabase.rpc('create_landlord', {
+      landlord: landlord
+    });
 
     if (error) {
       toast({
@@ -53,7 +68,7 @@ export async function createLandlord(landlord: LandlordInsert): Promise<Landlord
       return null;
     }
 
-    return data as unknown as Landlord;
+    return data as Landlord;
   } catch (error: any) {
     toast({
       title: "Error",
@@ -66,10 +81,10 @@ export async function createLandlord(landlord: LandlordInsert): Promise<Landlord
 
 export async function updateLandlord(id: string, landlord: LandlordUpdate): Promise<Landlord | null> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
+    // Use a stored function instead of a direct table update
     const { data, error } = await supabase.rpc('update_landlord', {
       landlord_id: id,
-      ...landlord
+      landlord: landlord
     });
 
     if (error) {
@@ -81,7 +96,7 @@ export async function updateLandlord(id: string, landlord: LandlordUpdate): Prom
       return null;
     }
 
-    return data as unknown as Landlord;
+    return data as Landlord;
   } catch (error: any) {
     toast({
       title: "Error",
@@ -94,8 +109,10 @@ export async function updateLandlord(id: string, landlord: LandlordUpdate): Prom
 
 export async function deleteLandlord(id: string): Promise<boolean> {
   try {
-    // Use a raw SQL query since the table might not be in the generated types
-    const { error } = await supabase.rpc('delete_landlord', { landlord_id: id });
+    // Use a stored function instead of a direct table delete
+    const { data, error } = await supabase.rpc('delete_landlord', { 
+      landlord_id: id 
+    });
 
     if (error) {
       toast({
@@ -115,4 +132,4 @@ export async function deleteLandlord(id: string): Promise<boolean> {
     });
     return false;
   }
-} 
+}

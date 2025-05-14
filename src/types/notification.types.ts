@@ -16,7 +16,10 @@ export type NotificationType =
   | 'booking_rejected'
   | 'property_approved'
   | 'property_rejected'
-  | 'system';
+  | 'system'
+  | 'subscription'
+  | 'property'
+  | 'payment';
 
 export type NotificationStatus = 'sent' | 'delivered' | 'read';
 
