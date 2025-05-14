@@ -1,5 +1,6 @@
+
 import { supabase } from '@/integrations/supabase/client';
-import { Property } from '@/types/property.types';
+import { Property, PropertyImage } from '@/types/property.types';
 
 // Helper function to safely convert database property images to our PropertyImage type
 function safelyConvertToPropertyImages(images: any) {
@@ -7,9 +8,9 @@ function safelyConvertToPropertyImages(images: any) {
   if (!Array.isArray(images)) return [];
   
   return images.map((img) => ({
-    id: img.id || '',
     url: img.url || '',
-    alt: img.alt || '',
+    publicId: img.id || 'unknown',
+    caption: img.alt || '',
     isMain: !!img.isMain
   }));
 }
