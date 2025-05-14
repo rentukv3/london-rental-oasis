@@ -1,7 +1,16 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { Booking, BookingInsert, BookingUpdate } from "@/types/booking.types";
+
+export interface Booking {
+  id: string;
+  property_id: string;
+  tenant_id: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  created_at: string;
+}
 
 export async function getBookings(): Promise<Booking[]> {
   const { data, error } = await supabase

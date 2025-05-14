@@ -1,27 +1,14 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
 export interface Landlord {
   id: string;
-  user_id: string;
   first_name: string;
   last_name: string;
   email: string;
-  phone: string | null;
-  company_name: string | null;
-  company_registration: string | null;
-  address: string | null;
-  city: string | null;
-  country: string | null;
-  created_at: string | null;
-  updated_at: string | null;
   status: string;
   verification_status: string;
-  subscription_status: string;
-  subscription_id: string | null;
-  notes: string | null;
-  documents: any | null;
+  created_at: string;
 }
 
 export type LandlordInsert = Omit<Landlord, 'id' | 'created_at' | 'updated_at'>;

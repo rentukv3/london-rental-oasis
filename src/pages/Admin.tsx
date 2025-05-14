@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin/StatCard";
 import { ActivityTable } from "@/components/admin/ActivityTable";
 import { PendingApprovalsTable } from "@/components/admin/PendingApprovalsTable";
-import { getAdminStats, getPendingApprovals, getRecentActivities, approveItem, rejectItem } from "@/lib/admin.service";
-import { getTenants, createTenant, updateTenant, deleteTenant } from "@/lib/tenant.service";
-import { getLandlords, createLandlord, updateLandlord, deleteLandlord } from "@/lib/landlord.service";
-import { getBookings, createBooking, updateBooking, deleteBooking } from "@/lib/booking.service";
+import { getAdminStats, getPendingApprovals, getRecentActivities, PendingApproval, Activity, AdminStats } from "@/lib/admin.service";
+import { getTenants, createTenant, updateTenant, deleteTenant, Tenant } from "@/lib/tenant.service";
+import { getLandlords, createLandlord, updateLandlord, deleteLandlord, Landlord } from "@/lib/landlord.service";
+import { getBookings, createBooking, updateBooking, deleteBooking, Booking } from "@/lib/booking.service";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Componente de carga personalizado con los colores del proyecto
 function LoadingSpinner() {

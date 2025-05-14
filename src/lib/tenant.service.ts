@@ -3,23 +3,12 @@ import { toast } from "@/components/ui/use-toast";
 
 export interface Tenant {
   id: string;
-  user_id: string;
   first_name: string;
   last_name: string;
   email: string;
-  phone: string | null;
-  address: string | null;
-  city: string | null;
-  country: string | null;
-  employment_status: string | null;
-  annual_income: number | null;
-  credit_score: number | null;
-  created_at: string | null;
-  updated_at: string | null;
   status: string;
-  notes: string | null;
-  documents: any | null;
   verification_status: string;
+  created_at: string;
 }
 
 export type TenantInsert = Omit<Tenant, 'id' | 'created_at' | 'updated_at'>;
