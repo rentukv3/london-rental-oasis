@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,7 +65,7 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
               <Input
                 id="price"
                 type="number"
-                min="0"
+                min="300"
                 step="100"
                 value={priceMax}
                 onChange={(e) => setPriceMax(Number(e.target.value))}

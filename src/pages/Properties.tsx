@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -81,6 +80,7 @@ const PropertiesPage = () => {
   const [properties, setProperties] = useState<Property[]>(allProperties);
   const [currentPage, setCurrentPage] = useState(1);
   const propertiesPerPage = 6;
+  const [view, setView] = useState<'grid' | 'list'>('grid');
   
   const handleSearch = (criteria: SearchCriteria) => {
     console.log('Search criteria:', criteria);
@@ -120,9 +120,30 @@ const PropertiesPage = () => {
               <PropertySearch onSearch={handleSearch} />
             </div>
             
+            {/* Botón de cambio de vista */}
+            <div className="flex justify-end mb-4">
+              <Button 
+                variant={view === 'grid' ? 'default' : 'outline'}
+                onClick={() => setView('grid')}
+                className="mr-2"
+              >
+                Grid View
+              </Button>
+              <Button 
+                variant={view === 'list' ? 'default' : 'outline'}
+                onClick={() => setView('list')}
+              >
+                List View
+              </Button>
+            </div>
+            
             {properties.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div className={
+                  view === 'grid'
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+                    : "flex flex-col gap-6 mb-8"
+                }>
                   {currentProperties.map(property => (
                     <PropertyCard key={property.id} property={property} />
                   ))}

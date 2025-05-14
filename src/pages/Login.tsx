@@ -79,7 +79,7 @@ export default function Login() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => navigate("/register")}>
+            <Button variant="outline" onClick={() => navigate("/auth/register")}>
               Registrarse
             </Button>
             <Button type="submit" disabled={loading}>

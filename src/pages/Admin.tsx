@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin/StatCard";
 import { ActivityTable } from "@/components/admin/ActivityTable";
