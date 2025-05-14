@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { toast } from 'sonner';
-import { UserProfile } from '@/types/user.types';
+import { UserProfile, DbProfile, mapDbProfileToUserProfile, mapUserProfileToDb } from '@/types/user.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,15 +38,17 @@ const Profile = () => {
 
         if (error) throw error;
         
-        setProfile(data);
+        // Convert database format to frontend format
+        const userProfile = mapDbProfileToUserProfile(data as DbProfile);
+        setProfile(userProfile);
         setFormData({
-          firstName: data.first_name || '',
-          lastName: data.last_name || '',
-          displayName: data.display_name || '',
-          phone: data.phone || '',
-          bio: data.bio || '',
-          company: data.company || '',
-          website: data.website || '',
+          firstName: userProfile.firstName || '',
+          lastName: userProfile.lastName || '',
+          displayName: userProfile.displayName || '',
+          phone: userProfile.phone || '',
+          bio: userProfile.bio || '',
+          company: userProfile.company || '',
+          website: userProfile.website || '',
         });
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -63,16 +66,21 @@ const Profile = () => {
     if (!user) return;
 
     try {
+      // Convert frontend format to database format
+      const dbProfile = mapUserProfileToDb({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        displayName: formData.displayName,
+        phone: formData.phone,
+        bio: formData.bio,
+        company: formData.company,
+        website: formData.website,
+      });
+
       const { error } = await supabase
         .from('profiles')
         .update({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          display_name: formData.displayName,
-          phone: formData.phone,
-          bio: formData.bio,
-          company: formData.company,
-          website: formData.website,
+          ...dbProfile,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
@@ -237,37 +245,37 @@ const Profile = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium">First Name</h3>
-                  <p>{profile.firstName}</p>
+                  <p>{profile.firstName || '-'}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium">Last Name</h3>
-                  <p>{profile.lastName}</p>
+                  <p>{profile.lastName || '-'}</p>
                 </div>
               </div>
 
               <div>
                 <h3 className="text-sm font-medium">Display Name</h3>
-                <p>{profile.displayName}</p>
+                <p>{profile.displayName || '-'}</p>
               </div>
 
               <div>
                 <h3 className="text-sm font-medium">Phone</h3>
-                <p>{profile.phone}</p>
+                <p>{profile.phone || '-'}</p>
               </div>
 
               <div>
                 <h3 className="text-sm font-medium">Bio</h3>
-                <p>{profile.bio}</p>
+                <p>{profile.bio || '-'}</p>
               </div>
 
               <div>
                 <h3 className="text-sm font-medium">Company</h3>
-                <p>{profile.company}</p>
+                <p>{profile.company || '-'}</p>
               </div>
 
               <div>
                 <h3 className="text-sm font-medium">Website</h3>
-                <p>{profile.website}</p>
+                <p>{profile.website || '-'}</p>
               </div>
 
               <Button onClick={() => setEditing(true)}>Edit Profile</Button>
@@ -279,4 +287,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
