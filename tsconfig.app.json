@@ -21,6 +21,12 @@
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
 
+    /* React specific */
+    "jsxImportSource": "react",
+    "types": ["react", "react-dom"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
