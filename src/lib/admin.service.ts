@@ -1,4 +1,5 @@
-import { supabase } from '@/integrations/supabase/supabase';
+
+import { supabase } from '@/integrations/supabase/client';
 import { AdminDashboardData, AdminStatistics, ActivityLogItem, PendingApproval } from '@/types/admin.types';
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
@@ -70,6 +71,64 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   } catch (error) {
     console.error('Error fetching admin dashboard data:', error);
     throw error;
+  }
+}
+
+// Add these functions to be compatible with Admin.tsx
+export async function getAdminStats() {
+  try {
+    const { data, error } = await supabase
+      .from('admin_stats')
+      .select('*')
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      totalUsers: data?.total_users || 0,
+      totalProperties: data?.total_properties || 0,
+      totalBookings: data?.total_bookings || 0
+    };
+  } catch (error) {
+    console.error('Error fetching admin stats:', error);
+    return {
+      totalUsers: 0,
+      totalProperties: 0,
+      totalBookings: 0
+    };
+  }
+}
+
+export async function getPendingApprovals() {
+  try {
+    const { data, error } = await supabase
+      .from('pending_approvals')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching pending approvals:', error);
+    return [];
+  }
+}
+
+export async function getRecentActivities() {
+  try {
+    const { data, error } = await supabase
+      .from('activity_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    
+    if (error) throw error;
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching recent activities:', error);
+    return [];
   }
 }
 
