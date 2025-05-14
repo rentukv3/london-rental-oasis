@@ -18,19 +18,14 @@ const safelyConvertToPropertyFeatures = (jsonData: Json | null): PropertyFeature
 const safelyConvertToPropertyImages = (jsonData: Json | null): PropertyImage[] => {
   if (!jsonData) return [];
   
-  // Simple check if it's an array
+  // Simple type check for array
   if (!Array.isArray(jsonData)) return [];
   
-  // Map only if we're sure it's an array
-  return jsonData.map(img => {
-    if (typeof img !== 'object' || img === null) {
-      return { url: '', publicId: '' };
-    }
-    
-    const imgObj = img as Record<string, unknown>;
+  // Using a simpler approach to avoid deep type instantiation
+  return jsonData.map((img: any) => {
     return {
-      url: typeof imgObj.url === 'string' ? imgObj.url : '',
-      publicId: typeof imgObj.publicId === 'string' ? imgObj.publicId : ''
+      url: typeof img?.url === 'string' ? img.url : '',
+      publicId: typeof img?.publicId === 'string' ? img.publicId : ''
     };
   });
 };

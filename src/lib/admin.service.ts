@@ -60,7 +60,8 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       type: item.type,
       status: item.status,
       createdAt: new Date(item.created_at),
-      data: item.data || {}
+      // Use optional chaining to check if data exists before accessing it
+      data: item.data as Record<string, any> || {}
     })) as PendingApproval[];
   } catch (error: any) {
     toast({
