@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Bookings from "./pages/Bookings";
 import NotFound from "./pages/NotFound";
 import { AnalyticsMiddleware } from '@/middleware/analytics.middleware';
 
@@ -31,6 +33,7 @@ const App = () => (
               <Route path="/properties" element={<Properties />} />
               <Route path="/property/:id" element={<PropertyDetails />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/bookings" element={<Bookings />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<FAQ />} />

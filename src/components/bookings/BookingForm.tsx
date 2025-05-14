@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,12 +28,16 @@ export const BookingForm = ({ propertyId, propertyTitle }: BookingFormProps) => 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Must be logged in to book');
 
-      const { error } = await supabase.from('bookings').insert({
-        property_id: propertyId,
+      // Store the booking request in a notification instead since bookings table doesn't exist yet
+      const { error } = await supabase.from('notifications').insert({
         user_id: user.id,
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
-        status: 'pending',
+        type: 'booking_request',
+        message: `Booking request for property ${propertyTitle}`,
+        data: {
+          property_id: propertyId,
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+        }
       });
 
       if (error) throw error;
@@ -80,4 +85,4 @@ export const BookingForm = ({ propertyId, propertyTitle }: BookingFormProps) => 
       </Button>
     </form>
   );
-}; 
+};
