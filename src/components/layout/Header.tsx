@@ -21,7 +21,7 @@ const Header: React.FC = () => {
     if (!user) {
       navigate('/auth/login');
     } else {
-      navigate('/properties/publish');
+      navigate('/property-management');
     }
   };
 
