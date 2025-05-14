@@ -1,4 +1,5 @@
-import { PendingApproval } from "@/lib/admin.service";
+
+import { PendingApproval } from "@/types/admin.types";
 import { Button } from "@/components/ui/button";
 
 interface PendingApprovalsTableProps {
@@ -31,4 +32,4 @@ export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsT
       </table>
     </div>
   );
-} 
+}

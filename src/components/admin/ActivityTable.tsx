@@ -1,4 +1,5 @@
-import { Activity } from "@/lib/admin.service";
+
+import { Activity } from "@/types/admin.types";
 
 interface ActivityTableProps {
   activities: Activity[];
@@ -29,4 +30,4 @@ export function ActivityTable({ activities }: ActivityTableProps) {
       </table>
     </div>
   );
-} 
+}

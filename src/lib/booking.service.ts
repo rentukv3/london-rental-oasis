@@ -1,19 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-
-export interface Booking {
-  id: string;
-  property_id: string;
-  tenant_id: string;
-  start_date: string;
-  end_date: string;
-  status: string;
-  created_at: string | null;
-  updated_at: string | null;
-}
-
-export type BookingInsert = Omit<Booking, 'id' | 'created_at' | 'updated_at'>;
-export type BookingUpdate = Partial<BookingInsert>;
+import { Booking, BookingInsert, BookingUpdate } from "@/types/booking.types";
 
 export async function getBookings(): Promise<Booking[]> {
   const { data, error } = await supabase
@@ -30,7 +18,7 @@ export async function getBookings(): Promise<Booking[]> {
     throw error;
   }
 
-  return data;
+  return data as Booking[];
 }
 
 export async function createBooking(booking: BookingInsert): Promise<Booking | null> {
@@ -49,7 +37,7 @@ export async function createBooking(booking: BookingInsert): Promise<Booking | n
     return null;
   }
 
-  return data;
+  return data as Booking;
 }
 
 export async function updateBooking(id: string, booking: BookingUpdate): Promise<Booking | null> {
@@ -69,7 +57,7 @@ export async function updateBooking(id: string, booking: BookingUpdate): Promise
     return null;
   }
 
-  return data;
+  return data as Booking;
 }
 
 export async function deleteBooking(id: string): Promise<boolean> {
@@ -88,4 +76,4 @@ export async function deleteBooking(id: string): Promise<boolean> {
   }
 
   return true;
-} 
+}

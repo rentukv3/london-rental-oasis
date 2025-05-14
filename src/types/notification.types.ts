@@ -1,41 +1,24 @@
 
-/**
- * Types of notifications
- */
-export type NotificationType = 
-  | 'subscription' // Related to subscription events
-  | 'payment'      // Related to payment events
-  | 'property'     // Related to property listing events
-  | 'system'       // System notifications
-  | 'message';     // User messages
-
-/**
- * Status of notification
- */
-export type NotificationStatus = 
-  | 'sent'      // Notification created but not confirmed delivered
-  | 'delivered' // Confirmed delivered via WebSocket/Push
-  | 'read'      // User has read the notification
-  | 'archived'; // User has archived the notification
-
-/**
- * Notification data structure
- */
 export interface Notification {
-  /** Unique identifier */
   id: string;
-  /** ID of the user who should receive this notification */
-  userId: string;
-  /** Type of notification */
+  user_id: string;
   type: NotificationType;
-  /** Notification message */
   message: string;
-  /** Additional data related to the notification (property ID, payment ID, etc.) */
-  data?: Record<string, any>;
-  /** Current status of the notification */
+  data: any;
   status: NotificationStatus;
-  /** Date when the notification was read */
-  readAt?: Date;
-  /** Date when the notification was created */
-  createdAt: Date;
+  read_at: string | null;
+  created_at: string;
 }
+
+export type NotificationType = 
+  | 'booking_request'
+  | 'booking_approved'
+  | 'booking_rejected'
+  | 'property_approved'
+  | 'property_rejected'
+  | 'system';
+
+export type NotificationStatus = 'sent' | 'delivered' | 'read';
+
+export type NotificationInsert = Omit<Notification, 'id' | 'created_at'>;
+export type NotificationUpdate = Partial<Omit<Notification, 'id' | 'created_at'>>;

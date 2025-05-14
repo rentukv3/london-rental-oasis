@@ -1,27 +1,8 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-
-export interface AdminStats {
-  totalUsers: number;
-  totalProperties: number;
-  totalBookings: number;
-}
-
-export interface PendingApproval {
-  id: string;
-  type: string;
-  user_id: string;
-  status: string;
-  created_at: string;
-}
-
-export interface Activity {
-  id: string;
-  user_id: string;
-  action: string;
-  details: string;
-  created_at: string;
-}
+import { AdminStats, PendingApproval, Activity } from "@/types";
+import { Json } from "@/integrations/supabase/types";
 
 export async function getAdminStats(): Promise<AdminStats> {
   const { data, error } = await supabase.rpc('get_admin_stats');
@@ -33,7 +14,7 @@ export async function getAdminStats(): Promise<AdminStats> {
     });
     throw error;
   }
-  return data;
+  return data as AdminStats;
 }
 
 export async function getPendingApprovals(): Promise<PendingApproval[]> {
@@ -50,7 +31,7 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
     });
     throw error;
   }
-  return data;
+  return data as PendingApproval[];
 }
 
 export async function getRecentActivities(): Promise<Activity[]> {
@@ -68,7 +49,7 @@ export async function getRecentActivities(): Promise<Activity[]> {
     });
     throw error;
   }
-  return data;
+  return data as Activity[];
 }
 
 export async function approveItem(id: string, type: string): Promise<void> {
@@ -93,4 +74,4 @@ export async function rejectItem(id: string, type: string): Promise<void> {
     });
     throw error;
   }
-} 
+}

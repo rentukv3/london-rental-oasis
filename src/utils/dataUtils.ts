@@ -1,4 +1,5 @@
-import { Property, PropertyTypeValue, PropertyImage, PropertyFeatures } from '@/types';
+import { Property, PropertyTypeValue, PropertyImage } from '@/types';
+import { PropertyFeatures } from '@/types/property.features';
 import { SubscriptionPlan, SubscriptionInterval, SubscriptionFeatures, Subscription, SubscriptionStatus } from '@/types/subscription.types';
 
 /**
