@@ -1,3 +1,4 @@
+
 name: Deploy London Rental Oasis
 
 on:
@@ -33,6 +34,9 @@ jobs:
         echo "VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}" >> .env
         echo "VITE_APP_URL=${APP_URL}" >> .env
         echo "VITE_APP_NAME=London Rental Oasis" >> .env
+
+    - name: Verify environment variables
+      run: node scripts/verify-env.js
 
     - name: Run tests
       env:

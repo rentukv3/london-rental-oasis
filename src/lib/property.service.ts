@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Property } from '@/types/property.types';
 
@@ -37,6 +36,20 @@ function convertToProperty(data: any): Property {
     createdAt: data.created_at ? new Date(data.created_at) : new Date(),
     updatedAt: data.updated_at ? new Date(data.updated_at) : new Date(),
   };
+}
+
+/**
+ * Transform API response to property images in the required format
+ */
+export function mapApiImagesToPropertyImages(images: any[]): PropertyImage[] {
+  if (!images || !Array.isArray(images)) return [];
+  
+  return images.map(image => ({
+    url: image.url || '',
+    publicId: image.id || image.public_id || 'unknown',
+    caption: image.alt || image.caption || '',
+    isMain: Boolean(image.isMain)
+  }));
 }
 
 export async function getProperties(): Promise<Property[]> {

@@ -1,5 +1,5 @@
 
-// JavaScript version of verify-env.ts
+// JavaScript version as a fallback for build environments that might have issues with ts-node
 const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
