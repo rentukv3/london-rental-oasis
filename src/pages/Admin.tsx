@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// Alternativa 1: Usar un componente de carga personalizado
+// Componente de carga personalizado con los colores del proyecto
 function LoadingSpinner() {
   return (
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
   );
 }
 
@@ -141,224 +144,331 @@ export default function Admin() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner />
-      </div>
+      <LoadingSpinner />
     );
   }
 
   return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Panel de Administración</h1>
+    <div className="container py-8 bg-background">
+      <h1 className="text-3xl font-bold mb-6 text-foreground">Panel de Administración</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <StatCard title="Usuarios" value={stats?.totalUsers ?? 0} />
         <StatCard title="Propiedades" value={stats?.totalProperties ?? 0} />
         <StatCard title="Reservas" value={stats?.totalBookings ?? 0} />
       </div>
       <Tabs defaultValue="inquilinos" className="mb-8">
-        <TabsList>
+        <TabsList className="bg-muted">
           <TabsTrigger value="inquilinos">Inquilinos</TabsTrigger>
           <TabsTrigger value="propietarios">Propietarios</TabsTrigger>
           <TabsTrigger value="reservas">Reservas</TabsTrigger>
         </TabsList>
         <TabsContent value="inquilinos">
-          <Card>
+          <Card className="bg-card">
             <CardHeader>
-              <CardTitle>Gestión de Inquilinos</CardTitle>
+              <CardTitle className="text-card-foreground">Gestión de Inquilinos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button>Agregar Inquilino</Button>
+                    <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      Agregar Inquilino
+                    </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-background">
                     <DialogHeader>
-                      <DialogTitle>Agregar Inquilino</DialogTitle>
+                      <DialogTitle className="text-foreground">Agregar Inquilino</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="first_name" className="text-right">Nombre</Label>
-                        <Input id="first_name" value={newTenant.first_name || ""} onChange={(e) => setNewTenant({ ...newTenant, first_name: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="first_name" className="text-right text-foreground">Nombre</Label>
+                        <Input 
+                          id="first_name" 
+                          value={newTenant.first_name || ""} 
+                          onChange={(e) => setNewTenant({ ...newTenant, first_name: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="last_name" className="text-right">Apellido</Label>
-                        <Input id="last_name" value={newTenant.last_name || ""} onChange={(e) => setNewTenant({ ...newTenant, last_name: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="last_name" className="text-right text-foreground">Apellido</Label>
+                        <Input 
+                          id="last_name" 
+                          value={newTenant.last_name || ""} 
+                          onChange={(e) => setNewTenant({ ...newTenant, last_name: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">Email</Label>
-                        <Input id="email" value={newTenant.email || ""} onChange={(e) => setNewTenant({ ...newTenant, email: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="email" className="text-right text-foreground">Email</Label>
+                        <Input 
+                          id="email" 
+                          value={newTenant.email || ""} 
+                          onChange={(e) => setNewTenant({ ...newTenant, email: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={handleCreateTenant}>Guardar</Button>
+                      <Button 
+                        onClick={handleCreateTenant}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      >
+                        Guardar
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Email</th>
-                      <th>Estado</th>
-                      <th>Verificación</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tenants.map((t) => (
-                      <tr key={t.id}>
-                        <td>{t.first_name} {t.last_name}</td>
-                        <td>{t.email}</td>
-                        <td>{t.status}</td>
-                        <td>{t.verification_status}</td>
-                        <td>
-                          <Button onClick={() => setEditingTenant(t)} size="sm" variant="outline">Editar</Button>
-                          <Button onClick={() => handleDeleteTenant(t.id)} size="sm" variant="destructive" className="ml-2">Eliminar</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-foreground">Nombre</TableHead>
+                    <TableHead className="text-foreground">Email</TableHead>
+                    <TableHead className="text-foreground">Estado</TableHead>
+                    <TableHead className="text-foreground">Verificación</TableHead>
+                    <TableHead className="text-foreground">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tenants.map((t) => (
+                    <TableRow key={t.id}>
+                      <TableCell className="text-foreground">{t.first_name} {t.last_name}</TableCell>
+                      <TableCell className="text-foreground">{t.email}</TableCell>
+                      <TableCell className="text-foreground">{t.status}</TableCell>
+                      <TableCell className="text-foreground">{t.verification_status}</TableCell>
+                      <TableCell>
+                        <Button 
+                          onClick={() => setEditingTenant(t)} 
+                          size="sm" 
+                          variant="outline"
+                          className="border-primary text-primary hover:bg-primary/10"
+                        >
+                          Editar
+                        </Button>
+                        <Button 
+                          onClick={() => handleDeleteTenant(t.id)} 
+                          size="sm" 
+                          variant="destructive"
+                          className="ml-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Eliminar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="propietarios">
-          <Card>
+          <Card className="bg-card">
             <CardHeader>
-              <CardTitle>Gestión de Propietarios</CardTitle>
+              <CardTitle className="text-card-foreground">Gestión de Propietarios</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button>Agregar Propietario</Button>
+                    <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      Agregar Propietario
+                    </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-background">
                     <DialogHeader>
-                      <DialogTitle>Agregar Propietario</DialogTitle>
+                      <DialogTitle className="text-foreground">Agregar Propietario</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="first_name" className="text-right">Nombre</Label>
-                        <Input id="first_name" value={newLandlord.first_name || ""} onChange={(e) => setNewLandlord({ ...newLandlord, first_name: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="first_name" className="text-right text-foreground">Nombre</Label>
+                        <Input 
+                          id="first_name" 
+                          value={newLandlord.first_name || ""} 
+                          onChange={(e) => setNewLandlord({ ...newLandlord, first_name: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="last_name" className="text-right">Apellido</Label>
-                        <Input id="last_name" value={newLandlord.last_name || ""} onChange={(e) => setNewLandlord({ ...newLandlord, last_name: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="last_name" className="text-right text-foreground">Apellido</Label>
+                        <Input 
+                          id="last_name" 
+                          value={newLandlord.last_name || ""} 
+                          onChange={(e) => setNewLandlord({ ...newLandlord, last_name: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">Email</Label>
-                        <Input id="email" value={newLandlord.email || ""} onChange={(e) => setNewLandlord({ ...newLandlord, email: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="email" className="text-right text-foreground">Email</Label>
+                        <Input 
+                          id="email" 
+                          value={newLandlord.email || ""} 
+                          onChange={(e) => setNewLandlord({ ...newLandlord, email: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={handleCreateLandlord}>Guardar</Button>
+                      <Button 
+                        onClick={handleCreateLandlord}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      >
+                        Guardar
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Email</th>
-                      <th>Estado</th>
-                      <th>Verificación</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {landlords.map((l) => (
-                      <tr key={l.id}>
-                        <td>{l.first_name} {l.last_name}</td>
-                        <td>{l.email}</td>
-                        <td>{l.status}</td>
-                        <td>{l.verification_status}</td>
-                        <td>
-                          <Button onClick={() => setEditingLandlord(l)} size="sm" variant="outline">Editar</Button>
-                          <Button onClick={() => handleDeleteLandlord(l.id)} size="sm" variant="destructive" className="ml-2">Eliminar</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-foreground">Nombre</TableHead>
+                    <TableHead className="text-foreground">Email</TableHead>
+                    <TableHead className="text-foreground">Estado</TableHead>
+                    <TableHead className="text-foreground">Verificación</TableHead>
+                    <TableHead className="text-foreground">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {landlords.map((l) => (
+                    <TableRow key={l.id}>
+                      <TableCell className="text-foreground">{l.first_name} {l.last_name}</TableCell>
+                      <TableCell className="text-foreground">{l.email}</TableCell>
+                      <TableCell className="text-foreground">{l.status}</TableCell>
+                      <TableCell className="text-foreground">{l.verification_status}</TableCell>
+                      <TableCell>
+                        <Button 
+                          onClick={() => setEditingLandlord(l)} 
+                          size="sm" 
+                          variant="outline"
+                          className="border-primary text-primary hover:bg-primary/10"
+                        >
+                          Editar
+                        </Button>
+                        <Button 
+                          onClick={() => handleDeleteLandlord(l.id)} 
+                          size="sm" 
+                          variant="destructive"
+                          className="ml-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Eliminar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="reservas">
-          <Card>
+          <Card className="bg-card">
             <CardHeader>
-              <CardTitle>Gestión de Reservas</CardTitle>
+              <CardTitle className="text-card-foreground">Gestión de Reservas</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button>Agregar Reserva</Button>
+                    <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      Agregar Reserva
+                    </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-background">
                     <DialogHeader>
-                      <DialogTitle>Agregar Reserva</DialogTitle>
+                      <DialogTitle className="text-foreground">Agregar Reserva</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="property_id" className="text-right">Propiedad</Label>
-                        <Input id="property_id" value={newBooking.property_id || ""} onChange={(e) => setNewBooking({ ...newBooking, property_id: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="property_id" className="text-right text-foreground">Propiedad</Label>
+                        <Input 
+                          id="property_id" 
+                          value={newBooking.property_id || ""} 
+                          onChange={(e) => setNewBooking({ ...newBooking, property_id: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="tenant_id" className="text-right">Inquilino</Label>
-                        <Input id="tenant_id" value={newBooking.tenant_id || ""} onChange={(e) => setNewBooking({ ...newBooking, tenant_id: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="tenant_id" className="text-right text-foreground">Inquilino</Label>
+                        <Input 
+                          id="tenant_id" 
+                          value={newBooking.tenant_id || ""} 
+                          onChange={(e) => setNewBooking({ ...newBooking, tenant_id: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="start_date" className="text-right">Fecha Inicio</Label>
-                        <Input id="start_date" type="date" value={newBooking.start_date || ""} onChange={(e) => setNewBooking({ ...newBooking, start_date: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="start_date" className="text-right text-foreground">Fecha Inicio</Label>
+                        <Input 
+                          id="start_date" 
+                          type="date" 
+                          value={newBooking.start_date || ""} 
+                          onChange={(e) => setNewBooking({ ...newBooking, start_date: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="end_date" className="text-right">Fecha Fin</Label>
-                        <Input id="end_date" type="date" value={newBooking.end_date || ""} onChange={(e) => setNewBooking({ ...newBooking, end_date: e.target.value })} className="col-span-3" />
+                        <Label htmlFor="end_date" className="text-right text-foreground">Fecha Fin</Label>
+                        <Input 
+                          id="end_date" 
+                          type="date" 
+                          value={newBooking.end_date || ""} 
+                          onChange={(e) => setNewBooking({ ...newBooking, end_date: e.target.value })} 
+                          className="col-span-3 bg-background text-foreground" 
+                        />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={handleCreateBooking}>Guardar</Button>
+                      <Button 
+                        onClick={handleCreateBooking}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      >
+                        Guardar
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr>
-                      <th>Propiedad</th>
-                      <th>Inquilino</th>
-                      <th>Estado</th>
-                      <th>Fecha Inicio</th>
-                      <th>Fecha Fin</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bookings.map((b) => (
-                      <tr key={b.id}>
-                        <td>{b.property_id}</td>
-                        <td>{b.tenant_id}</td>
-                        <td>{b.status}</td>
-                        <td>{b.start_date}</td>
-                        <td>{b.end_date}</td>
-                        <td>
-                          <Button onClick={() => setEditingBooking(b)} size="sm" variant="outline">Editar</Button>
-                          <Button onClick={() => handleDeleteBooking(b.id)} size="sm" variant="destructive" className="ml-2">Eliminar</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-foreground">Propiedad</TableHead>
+                    <TableHead className="text-foreground">Inquilino</TableHead>
+                    <TableHead className="text-foreground">Estado</TableHead>
+                    <TableHead className="text-foreground">Fecha Inicio</TableHead>
+                    <TableHead className="text-foreground">Fecha Fin</TableHead>
+                    <TableHead className="text-foreground">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {bookings.map((b) => (
+                    <TableRow key={b.id}>
+                      <TableCell className="text-foreground">{b.property_id}</TableCell>
+                      <TableCell className="text-foreground">{b.tenant_id}</TableCell>
+                      <TableCell className="text-foreground">{b.status}</TableCell>
+                      <TableCell className="text-foreground">{b.start_date}</TableCell>
+                      <TableCell className="text-foreground">{b.end_date}</TableCell>
+                      <TableCell>
+                        <Button 
+                          onClick={() => setEditingBooking(b)} 
+                          size="sm" 
+                          variant="outline"
+                          className="border-primary text-primary hover:bg-primary/10"
+                        >
+                          Editar
+                        </Button>
+                        <Button 
+                          onClick={() => handleDeleteBooking(b.id)} 
+                          size="sm" 
+                          variant="destructive"
+                          className="ml-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Eliminar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>

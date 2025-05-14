@@ -1,6 +1,6 @@
-
-import { PendingApproval } from "@/types/admin.types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { PendingApproval } from "@/lib/admin.service";
 
 interface PendingApprovalsTableProps {
   approvals: PendingApproval[];
@@ -9,27 +9,43 @@ interface PendingApprovalsTableProps {
 
 export function PendingApprovalsTable({ approvals, onAction }: PendingApprovalsTableProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Tipo</th>
-            <th>Usuario</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {approvals.map((approval) => (
-            <tr key={approval.id}>
-              <td>{new Date(approval.created_at).toLocaleString()}</td>
-              <td>{approval.type}</td>
-              <td>{approval.user_id}</td>
-              <td>{approval.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="text-foreground">Tipo</TableHead>
+          <TableHead className="text-foreground">Detalles</TableHead>
+          <TableHead className="text-foreground">Fecha</TableHead>
+          <TableHead className="text-foreground">Acciones</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {approvals.map((approval) => (
+          <TableRow key={approval.id}>
+            <TableCell className="text-foreground">{approval.type}</TableCell>
+            <TableCell className="text-foreground">{approval.details}</TableCell>
+            <TableCell className="text-foreground">
+              {new Date(approval.created_at).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              <Button 
+                onClick={onAction}
+                size="sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                Aprobar
+              </Button>
+              <Button 
+                onClick={onAction}
+                size="sm"
+                variant="destructive"
+                className="ml-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Rechazar
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
