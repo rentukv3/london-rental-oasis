@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { AdminStats, PendingApproval, Activity } from "@/types/admin.types";
+import { Json } from "@/types/property.features";
 
 export async function getAdminStats(): Promise<AdminStats> {
   try {
@@ -16,7 +17,7 @@ export async function getAdminStats(): Promise<AdminStats> {
       return { totalUsers: 0, totalProperties: 0, totalBookings: 0 };
     }
     
-    // Cast data to AdminStats to ensure it has the right shape
+    // Type assertion to ensure correct shape
     return data as AdminStats;
   } catch (error: any) {
     toast({
@@ -44,9 +45,14 @@ export async function getPendingApprovals(): Promise<PendingApproval[]> {
       return [];
     }
     
+    // Transform and type the data properly
     return data.map(item => ({
-      ...item,
-      details: item.details || ''
+      id: item.id,
+      user_id: item.user_id,
+      type: item.type,
+      details: item.details || '', // Add default value
+      status: item.status,
+      created_at: item.created_at
     })) as PendingApproval[];
   } catch (error: any) {
     toast({

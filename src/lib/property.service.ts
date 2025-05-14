@@ -1,5 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { Property, PropertyImage, PropertyFeatures, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
+import { Property, PropertyImage, PropertyTypeValue, PropertyStatus, AdType, PromotionStatus, PropertyVisibility } from "@/types";
+import { PropertyFeatures } from "@/types/property.features";
 import { toast } from "@/components/ui/use-toast";
 import { normalizeProperty, propertyToDbFormat, normalizePropertyFeatures } from "@/utils/dataUtils";
 import { getCurrentUserSubscription, getSubscriptionPlanById } from "./subscription.service";
@@ -34,50 +36,58 @@ export async function getPublishedProperties(
     
     if (error) throw error;
     
+    if (!data) return { properties: [], count: 0 };
+    
     // Convert database objects to Property type objects
-    const properties = data?.map(item => {
+    const properties = data.map(item => {
       // First create the full location string from parts if needed
       const locationStr = `${item.address || ''}, ${item.city || ''}, ${item.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
       
-      const property: Partial<Property> = {
+      const features = typeof item.features === 'string' 
+        ? JSON.parse(item.features) as PropertyFeatures
+        : (item.features as unknown as PropertyFeatures) || {};
+        
+      const images = Array.isArray(item.images) 
+        ? item.images as unknown as PropertyImage[]
+        : (item.images ? [item.images as unknown as PropertyImage] : []);
+      
+      const property: Property = {
         id: item.id,
         title: item.title,
-        description: item.description,
-        address: item.address,
-        city: item.city,
-        country: item.country,
+        description: item.description || '',
+        address: item.address || '',
+        city: item.city || '',
+        country: item.country || '',
         location: locationStr,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        price: item.price,
-        currency: item.currency,
-        propertyType: item.property_type as PropertyTypeValue,
-        bedrooms: item.bedrooms,
-        bathrooms: item.bathrooms,
-        areaSqm: item.area_sqm,
-        features: normalizePropertyFeatures(item.features as Json),
-        images: Array.isArray(item.images) 
-          ? (item.images as Json[]).map(img => img as unknown as PropertyImage) 
-          : (item.images ? [item.images as unknown as PropertyImage] : []),
-        virtualTourUrl: item.virtual_tour_url,
+        latitude: item.latitude || 0,
+        longitude: item.longitude || 0,
+        price: item.price || 0,
+        currency: item.currency || 'USD',
+        propertyType: item.property_type as PropertyTypeValue || 'apartment',
+        bedrooms: item.bedrooms || 0,
+        bathrooms: item.bathrooms || 0,
+        areaSqm: item.area_sqm || 0,
+        features: features,
+        images: images,
+        virtualTourUrl: item.virtual_tour_url || '',
         status: item.status as PropertyStatus,
         availabilityDate: item.availability_date ? new Date(item.availability_date) : undefined,
-        isFeatured: item.is_featured,
+        isFeatured: Boolean(item.is_featured),
         featuredUntil: item.featured_until ? new Date(item.featured_until) : undefined,
         adType: item.ad_type as AdType,
-        viewsCount: item.views_count,
-        contactClicks: item.contact_clicks,
+        viewsCount: item.views_count || 0,
+        contactClicks: item.contact_clicks || 0,
         listingCreatedAt: item.listing_created_at ? new Date(item.listing_created_at) : undefined,
         listingExpiresAt: item.listing_expires_at ? new Date(item.listing_expires_at) : undefined,
-        promotionStatus: item.promotion_status as PromotionStatus,
-        visibility: item.visibility as PropertyVisibility,
+        promotionStatus: item.promotion_status as PromotionStatus || 'inactive',
+        visibility: item.visibility as PropertyVisibility || 'public',
         createdAt: item.created_at ? new Date(item.created_at) : undefined,
         updatedAt: item.updated_at ? new Date(item.updated_at) : undefined,
         userId: item.user_id
       };
       
-      return normalizeProperty(property as Partial<Property>);
-    }) || [];
+      return property;
+    });
     
     return { 
       properties, 

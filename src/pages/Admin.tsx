@@ -1,11 +1,16 @@
+
 import React, { useState, useEffect } from "react";
 import { StatCard } from "@/components/admin/StatCard";
 import { ActivityTable } from "@/components/admin/ActivityTable";
 import { PendingApprovalsTable } from "@/components/admin/PendingApprovalsTable";
-import { getAdminStats, getPendingApprovals, getRecentActivities, PendingApproval, Activity, AdminStats } from "@/lib/admin.service";
-import { getTenants, createTenant, updateTenant, deleteTenant, Tenant } from "@/lib/tenant.service";
-import { getLandlords, createLandlord, updateLandlord, deleteLandlord, Landlord } from "@/lib/landlord.service";
-import { getBookings, createBooking, updateBooking, deleteBooking, Booking } from "@/lib/booking.service";
+import { getAdminStats, getPendingApprovals, getRecentActivities } from "@/lib/admin.service";
+import { getTenants, createTenant, updateTenant, deleteTenant } from "@/lib/tenant.service";
+import { getLandlords, createLandlord, updateLandlord, deleteLandlord } from "@/lib/landlord.service";
+import { getBookings, createBooking, updateBooking, deleteBooking } from "@/lib/booking.service";
+import { AdminStats, PendingApproval, Activity } from "@/types/admin.types";
+import { Tenant } from "@/types/admin.types";
+import { Landlord } from "@/types/admin.types";
+import { Booking } from "@/types/booking.types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
