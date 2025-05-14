@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Property, PropertyImage } from '@/types/property.types';
 
@@ -34,6 +33,7 @@ function convertToProperty(data: any): Property {
     propertyType: data.property_type || 'apartment',
     status: data.status || 'draft',
     userId: data.user_id || '',
+    isFeatured: !!data.is_featured, // Add the missing isFeatured property
     createdAt: data.created_at ? new Date(data.created_at) : new Date(),
     updatedAt: data.updated_at ? new Date(data.updated_at) : new Date(),
   };
