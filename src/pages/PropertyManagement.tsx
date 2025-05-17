@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { toast } from 'sonner';
 import { Property } from '@/types/property.types';
-import { convertToProperty } from '@/lib/property.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,9 +33,7 @@ const PropertyManagement = () => {
 
         if (error) throw error;
         
-        // Use the convertToProperty function to ensure proper type conversion
-        const convertedProperties = (data || []).map(convertToProperty);
-        setProperties(convertedProperties);
+        setProperties(data);
       } catch (error) {
         console.error('Error fetching properties:', error);
         toast.error('Failed to load properties');
@@ -146,4 +142,4 @@ const PropertyManagement = () => {
   );
 };
 
-export default PropertyManagement;
+export default PropertyManagement; 
